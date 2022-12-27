@@ -6,8 +6,8 @@ CREATE TABLE [dbo].[EventUser]
 [EventTeam_id] [int] NULL,
 [create_user_id] [int] NOT NULL,
 [update_user_id] [int] NOT NULL,
-[create_time] [datetime] NOT NULL,
-[update_time] [datetime] NOT NULL,
+[create_time] [datetime] NOT NULL CONSTRAINT [DF_EventUser_create_time] DEFAULT (getdate()),
+[update_time] [datetime] NOT NULL CONSTRAINT [DF_EventUser_update_time] DEFAULT (getdate()),
 [row_status_id] [int] NOT NULL
 ) ON [PRIMARY]
 GO

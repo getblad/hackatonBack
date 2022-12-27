@@ -13,8 +13,8 @@ CREATE TABLE [dbo].[event]
 [event_min_count_of_event_members] [int] NULL,
 [create_user_id] [int] NOT NULL,
 [update_user_id] [int] NOT NULL,
-[create_time] [datetime] NOT NULL,
-[update_time] [datetime] NOT NULL,
+[create_time] [datetime] NOT NULL CONSTRAINT [DF_event_create_time] DEFAULT (getdate()),
+[update_time] [datetime] NOT NULL CONSTRAINT [DF_event_update_time] DEFAULT (getdate()),
 [row_status_id] [int] NOT NULL
 ) ON [PRIMARY]
 GO

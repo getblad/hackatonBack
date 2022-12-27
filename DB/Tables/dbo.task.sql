@@ -14,8 +14,8 @@ CREATE TABLE [dbo].[task]
 [task_main_task_id] [int] NULL,
 [create_user_id] [int] NOT NULL,
 [update_user_id] [int] NOT NULL,
-[create_time] [datetime] NOT NULL,
-[update_time] [datetime] NOT NULL,
+[create_time] [datetime] NOT NULL CONSTRAINT [DF_task_create_time] DEFAULT (getdate()),
+[update_time] [datetime] NOT NULL CONSTRAINT [DF_task_update_time] DEFAULT (getdate()),
 [row_status_id] [int] NOT NULL
 ) ON [PRIMARY]
 GO

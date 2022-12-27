@@ -6,8 +6,8 @@ CREATE TABLE [dbo].[team]
 [team_capitan_id] [int] NOT NULL,
 [create_user_id] [int] NOT NULL,
 [update_user_id] [int] NOT NULL,
-[create_time] [datetime] NOT NULL,
-[update_time] [datetime] NOT NULL,
+[create_time] [datetime] NOT NULL CONSTRAINT [DF_team_create_time] DEFAULT (getdate()),
+[update_time] [datetime] NOT NULL CONSTRAINT [DF_team_update_time] DEFAULT (getdate()),
 [row_status_id] [int] NOT NULL
 ) ON [PRIMARY]
 GO
