@@ -35,7 +35,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.MapGet("/status", (HpContext context) =>
+{
+    var
+})
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
