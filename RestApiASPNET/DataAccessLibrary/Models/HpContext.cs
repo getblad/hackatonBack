@@ -29,7 +29,7 @@ public partial class HpContext : DbContext
 
     public virtual DbSet<EventUserEventTeamMission> EventUserEventTeamMissions { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    
 
     public virtual DbSet<RowStatus> RowStatuses { get; set; }
 
@@ -39,7 +39,7 @@ public partial class HpContext : DbContext
 
     public virtual DbSet<Team> Teams { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<User?> Users { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -361,16 +361,7 @@ public partial class HpContext : DbContext
                 .HasConstraintName("FK_EventUser_event_user_id");
         });
 
-        modelBuilder.Entity<Role>(entity =>
-        {
-            entity.ToTable("role");
-
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
-            entity.Property(e => e.RoleName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("role_name");
-        });
+        
 
         modelBuilder.Entity<RowStatus>(entity =>
         {
@@ -519,7 +510,7 @@ public partial class HpContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("create_time");
             entity.Property(e => e.CreateUserId).HasColumnName("create_user_id");
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            // entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.RowStatusId).HasColumnName("row_status_id");
             entity.Property(e => e.TeamId).HasColumnName("team_id");
             entity.Property(e => e.UpdateTime)
@@ -545,12 +536,13 @@ public partial class HpContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("user_second_name");
 
-            entity.HasOne<Role>(d => d.Role).WithMany(p => p.Users)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_user_role");
-
+            
             entity.HasOne(d => d.Team).WithMany(p => p.Users).HasForeignKey(d => d.TeamId);
+
+            entity.HasOne(d => d.CreateUser).WithMany().HasForeignKey(d => d.CreateUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(d => d.UpdateUser).WithMany().HasForeignKey(d => d.UpdateUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RowStatus).WithMany(p => p.Users).HasForeignKey(d => d.RowStatusId);
         });
@@ -560,4 +552,6 @@ public partial class HpContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    
+   
 }

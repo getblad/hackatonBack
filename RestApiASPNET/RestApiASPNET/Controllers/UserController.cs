@@ -24,27 +24,39 @@ namespace RestApiASPNET.Controllers
      
 
         [HttpGet]
-        [Authorize]
-        public JsonResult GetUsers()
+        // [Authorize("read:users")]
+        public List<UserAdmin> GetUsers()
         {
-
-            return new JsonResult(Ok(_userService.GetUsers()));
+            // var json = new JsonResult(_userService.GetUsersSys());
+            return _userService.GetUsersSys();
         }
 
         [HttpGet( "{userId:int}")]
         
+        // [Authorize("read:user")]
         public JsonResult GetUserById(int userId)
-        {
-            var user = _userService.SingleUser(userId);
-            return new JsonResult(Ok(user).Value);
-        }
-
-        [HttpPost]
-        public JsonResult PostUser(User newUser)
         {
             try
             {
-                _userService.UpdateUser(newUser);
+                var user = _userService.SingleUser(userId);
+                return new JsonResult(Ok(user).Value);
+
+            }
+            catch (Exception e)
+            {
+                return new JsonResult(NotFound(e.Message));
+                
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult PostUser(UserAdmin newUser)
+        {
+            try
+            {
+                var id =_userService.AddUser(newUser);
+                newUser.UserId = id;
 
             }
             catch(Exception e)
@@ -54,6 +66,17 @@ namespace RestApiASPNET.Controllers
 
             return new JsonResult(Ok(newUser));
 
+        }
+
+        [HttpDelete]
+        public JsonResult DeleteUser(int userId)
+        {
+            
+                _userService.DeleteUser(userId);
+                return new JsonResult(Ok("Object was deleted"));
+            
+
+            
         }
     }
 }
