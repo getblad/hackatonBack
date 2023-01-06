@@ -104,7 +104,7 @@ public class UserPublic
 public class UserAdmin
 {
 
-    public int? UserId { get; set; }
+    public int UserId { get; set; }
 
     public string UserFirstName { get; set; } = null!;
 

@@ -28,3 +28,20 @@ public partial class Team
 
     public virtual ICollection<User> Users { get; } = new List<User>();
 }
+
+public class TeamAdmin
+{
+    public int TeamId { get; set; }
+
+    public string TeamName { get; set; } = null!;
+
+    public string? TeamAvatar { get; set; }
+
+    public int? TeamCapitanId { get; set; }
+
+    public int? CreateUserId { get; set; }
+    public int? UpdateUserId { get; set; }
+    public DateTime? CreateTime { get; set; }
+
+    public DateTime? UpdateTime { get; set; }
+}

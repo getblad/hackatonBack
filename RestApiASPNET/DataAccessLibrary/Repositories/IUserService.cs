@@ -6,8 +6,8 @@ namespace DataAccessLibrary.Repositories;
 public interface IUserService
 {
     List<UserAdmin> GetUsersSys();
-    int AddUser(UserAdmin newUser);
-    void UpdateUser( User user);
+    void AddUser(UserAdmin newUser);
+    void UpdateUser( UserAdmin user);
     UserPublic SingleUser(int id);
     void DeleteUser(int id);
 }

@@ -11,6 +11,7 @@ namespace DataAccessLibrary.Services;
 public class UserService:IUserService
 {
     private readonly HpContext _context;
+    
 
     public UserService(HpContext context)
     {
@@ -37,7 +38,7 @@ public class UserService:IUserService
         }
     }
 
-    public int AddUser(UserAdmin newUser)
+    public void AddUser(UserAdmin newUser)
     {
         try
         {
@@ -61,10 +62,11 @@ public class UserService:IUserService
                 Team = null,
 
             };
-            var a = _context.Add(addingUser);
-            var id = addingUser.UserId;
+             
+            var a = _context.Users.Add(addingUser);
+            
             _context.SaveChanges();
-            return id;
+           
 
         }
         catch (Exception e)
@@ -75,23 +77,43 @@ public class UserService:IUserService
         }
     }
 
-    public void UpdateUser(User user)
+    public  void UpdateUser(UserAdmin user)
     {
-        
-            var local = _context.Set<User>().Local.FirstOrDefault(entry => entry.UserId.Equals(user.UserId));
+            
+            // var local = _context.Set<User>().Local.FirstOrDefault(entry => entry.UserId == user.UserId);
+            var local =  _context.Users.FirstOrDefault(entry => entry.UserId == user.UserId);
             // check if local is not null
-            if (local != null)
+            if (local == null)
             {
                 // detach
-                _context.Entry(local).State = EntityState.Detached;
-            }
-            else
-            {
+                // var a = _context.Entry(local);
+                // _context.Entry(local).State = EntityState.Detached;
                 throw new Exception("No such user");
             }
+            
 
-            _context.Entry(user).State = EntityState.Modified;
-            _context.SaveChanges();
+            var dbUser = new User()
+            {
+                UserId = user.UserId,
+                UserFirstName = user.UserFirstName,
+                UserSecondName = user.UserSecondName,
+                UserAvatar = user.UserAvatar,
+                UserEmail = user.UserEmail,
+                TeamId = user.TeamId,
+                CreateUserId = user.UpdateUser,
+                CreateUser = local.CreateUser,
+                UpdateUserId = user.UpdateUser,
+                UpdateUser = local.UpdateUser,
+                CreateTime = local.CreateTime,
+                UpdateTime = DateTime.Now,
+                RowStatusId = local.RowStatusId,
+                RowStatus = local.RowStatus,
+                Team = local.Team,
+            };
+            var entry = _context.Entry(local);
+            entry.CurrentValues.SetValues(dbUser);
+            entry.State = EntityState.Modified;
+             _context.SaveChanges();
         
         
     }
@@ -143,10 +165,10 @@ public class UserService:IUserService
             UserSecondName = user.UserSecondName,
             UserEmail = user.UserEmail,
             UserAvatar = user.UserAvatar,
-            TeamId = user.Team?.TeamId,
+            TeamId = user.TeamId,
             CreationTime = user.CreateTime,
             UpdateTime = user.UpdateTime,
-            UpdateUser = user.UpdateUser.UserId,
+            UpdateUser = user.UpdateUserId,
         };
     }
     private UserPublic _dbUserToPublic(User user)

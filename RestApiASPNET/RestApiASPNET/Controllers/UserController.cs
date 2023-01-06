@@ -23,6 +23,7 @@ namespace RestApiASPNET.Controllers
 
      
 
+        
         [HttpGet]
         // [Authorize("read:users")]
         public List<UserAdmin> GetUsers()
@@ -55,8 +56,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var id =_userService.AddUser(newUser);
-                newUser.UserId = id;
+                _userService.AddUser(newUser);
+                return new JsonResult(Ok("User is added"));
+
 
             }
             catch(Exception e)
@@ -77,6 +79,13 @@ namespace RestApiASPNET.Controllers
             
 
             
+        }
+
+        [HttpPut]
+        public JsonResult UpdateUser(UserAdmin user)
+        {
+            _userService.UpdateUser(user);
+            return new JsonResult(Ok("Update is complete"));
         }
     }
 }
