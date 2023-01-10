@@ -1,7 +1,13 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace DataAccessLibrary.Models;
 
 public partial class Team
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int TeamId { get; set; }
 
     public string TeamName { get; set; } = null!;
@@ -12,6 +18,7 @@ public partial class Team
 
     public int CreateUserId { get; set; }
 
+    [ForeignKey("UpdateUser")]
     public int UpdateUserId { get; set; }
 
     public DateTime CreateTime { get; set; }
@@ -22,6 +29,10 @@ public partial class Team
 
     public virtual User CreateUser { get; set; } = null!;
 
+    [DeleteBehavior(DeleteBehavior.NoAction)]
+    
+    public virtual User UpdateUser { get; set; } = null!;
+
     public virtual ICollection<EventTeam> EventTeams { get; } = new List<EventTeam>();
 
     public virtual RowStatus RowStatus { get; set; } = null!;
@@ -29,7 +40,7 @@ public partial class Team
     public virtual ICollection<User> Users { get; } = new List<User>();
 }
 
-public class TeamAdmin
+public class TeamDtoAdmin
 {
     public int TeamId { get; set; }
 
@@ -37,10 +48,10 @@ public class TeamAdmin
 
     public string? TeamAvatar { get; set; }
 
-    public int? TeamCapitanId { get; set; }
+    public int TeamCapitanId { get; set; }
 
-    public int? CreateUserId { get; set; }
-    public int? UpdateUserId { get; set; }
+    public int CreateUserId { get; set; }
+    public int UpdateUserId { get; set; }
     public DateTime? CreateTime { get; set; }
 
     public DateTime? UpdateTime { get; set; }

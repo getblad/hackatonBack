@@ -9,8 +9,8 @@
         <entry key="Common:dbContextName" value="HPContext" />
         <entry key="Common:generateOnConfiguring" value="true" />
         <entry key="Common:noBuild" value="false" />
-        <entry key="Common:outputFolder" value="Migrations" />
-        <entry key="Common:provider" value="HP" />
+        <entry key="Common:outputFolder" value="Models2" />
+        <entry key="Common:provider" value="Microsoft.EntityFrameworkCore.SqlServer " />
         <entry key="Common:useAttributes" value="false" />
         <entry key="Common:useDatabaseNames" value="true" />
         <entry key="Common:useDefaultConnection" value="true" />

@@ -1,3 +1,4 @@
+using AutoMapper;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Services;
@@ -12,12 +13,14 @@ namespace RestApiASPNET.Controllers
     {
         private readonly ITeamService _teamService;
         private readonly ILogger<TeamController> _logger;
+        private readonly IMapper _mapper;
 
 
-        public TeamController(ITeamService teamService, ILogger<TeamController> logger)
+        public TeamController(ITeamService teamService, ILogger<TeamController> logger, IMapper mapper)
         {
             _teamService = teamService;
             _logger = logger;
+            _mapper = mapper;
         }
 
 
@@ -48,35 +51,38 @@ namespace RestApiASPNET.Controllers
         //
         //     }
         //
-        //     [HttpPost]
-        //     public JsonResult PostUser(UserAdmin newUser)
-        //     {
-        //         try
-        //         {
-        //             _userService.AddUser(newUser);
-        //             return new JsonResult(Ok("User is added"));
-        //
-        //
-        //         }
-        //         catch(Exception e)
-        //         {
-        //             Console.WriteLine(e);
-        //         }
-        //
-        //         return new JsonResult(Ok(newUser));
-        //
-        //     }
-        //
-        //     [HttpDelete]
-        //     public JsonResult DeleteUser(int userId)
-        //     {
-        //         
-        //             _userService.DeleteUser(userId);
-        //             return new JsonResult(Ok("Object was deleted"));
-        //         
-        //
-        //         
-        //     }
+        [HttpPost]
+        public JsonResult PostTeam(TeamDtoAdmin newTeamDto)
+        {
+            try
+            {
+                var newTeam = _mapper.Map<Team>(newTeamDto);
+                newTeam.CreateTime = DateTime.Now;
+                newTeam.UpdateTime = DateTime.Now;
+                _teamService.AddTeam(newTeam);
+                return new JsonResult(Ok("Team is added"));
+        
+        
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        
+            return new JsonResult(Ok(newTeamDto));
+        
+        }
+        
+        [HttpDelete]
+        public JsonResult DeleteUser(int teamId)
+        {
+            
+                _teamService.DeleteTeam(teamId);
+                return new JsonResult(Ok("Team was deleted"));
+            
+        
+            
+        }
         //
         //     [HttpPut]
         //     public JsonResult UpdateUser(UserAdmin user)

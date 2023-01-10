@@ -1,3 +1,4 @@
+using AutoMapper;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -11,12 +12,14 @@ namespace RestApiASPNET.Controllers
     {
         private readonly IUserService _userService;
         private readonly ILogger<UsersController> _logger;
+        private readonly IMapper _mapper;
 
 
-        public UsersController(IUserService userService , ILogger<UsersController> logger)
+        public UsersController(IUserService userService , ILogger<UsersController> logger, IMapper mapper)
         {
             _userService = userService;
             _logger = logger;
+            _mapper = mapper;
         }
         
 
@@ -25,21 +28,23 @@ namespace RestApiASPNET.Controllers
 
         
         [HttpGet]
-        // [Authorize("read:users")]
-        public List<UserAdmin> GetUsers()
+        // [Authorize]
+        public List<UserDtoAdmin> GetUsers()
         {
             // var json = new JsonResult(_userService.GetUsersSys());
-            return _userService.GetUsersSys();
+            var users = new List<UserDtoAdmin> { _mapper.Map<UserDtoAdmin>(_userService.GetUsersSys()) };
+            return users ;
         }
 
         [HttpGet( "{userId:int}")]
         
-        // [Authorize("read:user")]
+        // [Authorize(Policy = "Administrator")]
         public JsonResult GetUserById(int userId)
         {
             try
             {
-                var user = _userService.SingleUser(userId);
+                var userDb = _userService.SingleUser(userId);
+                var user = _mapper.Map<UserDtoAdmin>(userDb);
                 return new JsonResult(Ok(user).Value);
 
             }
@@ -52,11 +57,11 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPost]
-        public JsonResult PostUser(UserAdmin newUser)
+        public JsonResult PostUser(UserDtoAdmin newUserDto)
         {
             try
             {
-                _userService.AddUser(newUser);
+                _userService.AddUser(newUserDto);
                 return new JsonResult(Ok("User is added"));
 
 
@@ -66,7 +71,7 @@ namespace RestApiASPNET.Controllers
                 Console.WriteLine(e);
             }
 
-            return new JsonResult(Ok(newUser));
+            return new JsonResult(Ok(newUserDto));
 
         }
 
@@ -82,8 +87,11 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPut]
-        public JsonResult UpdateUser(UserAdmin user)
+        public JsonResult UpdateUser(UserDtoAdmin userDto)
         {
+            var user = _mapper.Map<User>(userDto);
+            
+            
             _userService.UpdateUser(user);
             return new JsonResult(Ok("Update is complete"));
         }

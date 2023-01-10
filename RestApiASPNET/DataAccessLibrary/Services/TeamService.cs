@@ -10,10 +10,10 @@ public class TeamService:ITeamService
     {
         _context = context;
     }
-    public List<TeamAdmin> GetTeams()
+    public List<TeamDtoAdmin> GetTeams()
     {
        var dbTeams = _context.Teams.Where(e => e.RowStatusId == (int)StatusEnums.Active).ToList();
-       List<TeamAdmin> teamAdmins = new List<TeamAdmin>();
+       List<TeamDtoAdmin> teamAdmins = new List<TeamDtoAdmin>();
        foreach (var team in dbTeams)
        {
            teamAdmins.Add(_dbTeamAdmin(team));
@@ -24,7 +24,40 @@ public class TeamService:ITeamService
 
     public void AddTeam(Team newTeam)
     {
-        throw new NotImplementedException();
+        try
+        {
+            
+            // Team addingTeam = new Team
+            // {
+            //     
+            //     TeamName = newTeamDto.TeamName,
+            //     
+            //     TeamAvatar = newTeamDto.TeamAvatar,
+            //     TeamCapitanId = newTeamDto.TeamCapitanId,
+            //     TeamId = newTeamDto.TeamId,
+            //     CreateUserId = newTeamDto.CreateUserId,
+            //     CreateUser = null,
+            //     UpdateUserId = newTeamDto.UpdateUserId,
+            //     UpdateUser = null,
+            //     CreateTime = DateTime.Now,
+            //     UpdateTime = DateTime.Now,
+            //     RowStatusId = (int)StatusEnums.Active,
+            //     RowStatus = null,
+            //     
+            // };
+            //  
+             _context.Teams.Add(newTeam);
+            
+            _context.SaveChanges();
+           
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+
+        }
     }
 
     public void UpdateTeam(Team team)
@@ -34,12 +67,24 @@ public class TeamService:ITeamService
 
     public void DeleteTeam(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var team = _context.Teams.Find(id);
+            team.RowStatusId = (int)StatusEnums.Delete;
+            _context.SaveChanges();
+            
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+
+        }
+    
     }
 
-    private TeamAdmin _dbTeamAdmin(Team team)
+    private TeamDtoAdmin _dbTeamAdmin(Team team)
     {
-        return new TeamAdmin
+        return new TeamDtoAdmin
         {
             TeamId = team.TeamId,
             TeamName = team.TeamName,

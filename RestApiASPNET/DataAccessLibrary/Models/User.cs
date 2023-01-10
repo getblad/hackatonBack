@@ -8,6 +8,7 @@ namespace DataAccessLibrary.Models;
 public partial class User
 {
     [Key]
+    
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
 
@@ -50,8 +51,32 @@ public partial class User
     
     public int RowStatusId { get; set; }
     
+    
+    // public string? GitHub { get; set; }
+    
     public virtual RowStatus? RowStatus { get; set; }
+    
+    [Column("user_birthday")]
+    [Required]
+    public DateTime UserBirthday { get; set; }
+    
+    [Column("user_birthday_visibility")]
+    [Required]
+    public bool UserBirthdayVisibility { get; set; }
 
+    [Column("user_github")]
+    public string UserGitHub { get; set; } = null!;
+    
+    [Column("user_twitter")]
+    public string UserTwitter { get; set; } = null!;
+    
+    [Column("user_instagram")]
+    public string UserInstagram { get; set; } = null!;
+
+    [Column("user_facebook")]
+    public string UserFacebook { get; set; } = null;
+    
+    
     public virtual ICollection<EventMission> EventMissionCreateUsers { get; } = new List<EventMission>();
 
     public virtual ICollection<EventMission> EventMissionUpdateUsers { get; } = new List<EventMission>();
@@ -83,7 +108,7 @@ public partial class User
     public virtual ICollection<Team> Teams { get; } = new List<Team>();
 }
 
-public class UserPublic
+public class UserDtoPublic
 {
     
 
@@ -101,7 +126,7 @@ public class UserPublic
     
 }
 
-public class UserAdmin
+public class UserDtoAdmin
 {
 
     public int UserId { get; set; }
@@ -116,10 +141,10 @@ public class UserAdmin
     
     public int? TeamId { get; set; }
     
-    public DateTime CreationTime { get; set; }
+    public DateTime CreateTime { get; set; }
     
     public DateTime UpdateTime { get; set; }
     
-    public int UpdateUser { get; set; }
+    public int UpdateUserId { get; set; }
     
 }

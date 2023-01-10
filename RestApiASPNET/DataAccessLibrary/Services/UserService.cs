@@ -17,13 +17,13 @@ public class UserService:IUserService
     {
         _context = context;
     }
-    public List<UserAdmin> GetUsersSys()
+    public List<UserDtoAdmin> GetUsersSys()
     {
         try
         {
             var usersDb = _context.Users.Where(n => n.RowStatusId == (int)StatusEnums.Active).
                 ToList();
-            List<UserAdmin> userAdmins = new List<UserAdmin>();
+            List<UserDtoAdmin> userAdmins = new List<UserDtoAdmin>();
             foreach (var user in usersDb)
             {
                 userAdmins.Add(_dbUserToAdmin(user));
@@ -38,7 +38,7 @@ public class UserService:IUserService
         }
     }
 
-    public void AddUser(UserAdmin newUser)
+    public void AddUser(UserDtoAdmin newUserDto)
     {
         try
         {
@@ -46,14 +46,14 @@ public class UserService:IUserService
             User addingUser = new User
             {
                 
-                UserFirstName = newUser.UserFirstName,
-                UserSecondName = newUser.UserSecondName,
-                UserAvatar = newUser.UserAvatar,
-                UserEmail = newUser.UserEmail,
-                TeamId = newUser.TeamId,
-                CreateUserId = newUser.UpdateUser,
+                UserFirstName = newUserDto.UserFirstName,
+                UserSecondName = newUserDto.UserSecondName,
+                UserAvatar = newUserDto.UserAvatar,
+                UserEmail = newUserDto.UserEmail,
+                TeamId = newUserDto.TeamId,
+                CreateUserId = newUserDto.UpdateUserId,
                 CreateUser = null,
-                UpdateUserId = newUser.UpdateUser,
+                UpdateUserId = newUserDto.UpdateUserId,
                 UpdateUser = null,
                 CreateTime = DateTime.Now,
                 UpdateTime = DateTime.Now,
@@ -77,11 +77,12 @@ public class UserService:IUserService
         }
     }
 
-    public  void UpdateUser(UserAdmin user)
+    public  void UpdateUser(User user)
     {
             
             // var local = _context.Set<User>().Local.FirstOrDefault(entry => entry.UserId == user.UserId);
             var local =  _context.Users.FirstOrDefault(entry => entry.UserId == user.UserId);
+            
             // check if local is not null
             if (local == null)
             {
@@ -90,35 +91,26 @@ public class UserService:IUserService
                 // _context.Entry(local).State = EntityState.Detached;
                 throw new Exception("No such user");
             }
-            
 
-            var dbUser = new User()
-            {
-                UserId = user.UserId,
-                UserFirstName = user.UserFirstName,
-                UserSecondName = user.UserSecondName,
-                UserAvatar = user.UserAvatar,
-                UserEmail = user.UserEmail,
-                TeamId = user.TeamId,
-                CreateUserId = user.UpdateUser,
-                CreateUser = local.CreateUser,
-                UpdateUserId = user.UpdateUser,
-                UpdateUser = local.UpdateUser,
-                CreateTime = local.CreateTime,
-                UpdateTime = DateTime.Now,
-                RowStatusId = local.RowStatusId,
-                RowStatus = local.RowStatus,
-                Team = local.Team,
-            };
+            user.CreateUserId = local.CreateUserId;
+            user.CreateUser = local.CreateUser;
+            user.UpdateUser = local.UpdateUser;
+            user.CreateTime = local.CreateTime;
+            user.UpdateTime = DateTime.Now;
+            user.RowStatus = local.RowStatus;
+            user.RowStatusId = local.RowStatusId;
+            user.Team = local.Team;
+
+            
             var entry = _context.Entry(local);
-            entry.CurrentValues.SetValues(dbUser);
+            entry.CurrentValues.SetValues(user);
             entry.State = EntityState.Modified;
              _context.SaveChanges();
         
         
     }
 
-    public UserPublic SingleUser(int id)
+    public User SingleUser(int id)
     {
         try
         {
@@ -128,9 +120,8 @@ public class UserService:IUserService
             {
                 throw new Exception("No such user");
             }
-            var user = _dbUserToPublic(userDb);
-            
-            return user;
+
+            return userDb;
 
         }
         catch (Exception e)
@@ -156,9 +147,9 @@ public class UserService:IUserService
         }
     }
 
-    private UserAdmin _dbUserToAdmin(User? user)
+    private UserDtoAdmin _dbUserToAdmin(User? user)
     {
-        return new UserAdmin()
+        return new UserDtoAdmin()
         {
             UserId = user.UserId,
             UserFirstName = user.UserFirstName,
@@ -166,14 +157,14 @@ public class UserService:IUserService
             UserEmail = user.UserEmail,
             UserAvatar = user.UserAvatar,
             TeamId = user.TeamId,
-            CreationTime = user.CreateTime,
+            CreateTime = user.CreateTime,
             UpdateTime = user.UpdateTime,
-            UpdateUser = user.UpdateUserId,
+            UpdateUserId = user.UpdateUserId,
         };
     }
-    private UserPublic _dbUserToPublic(User user)
+    private UserDtoPublic _dbUserToPublic(User user)
     {
-        return new UserPublic()
+        return new UserDtoPublic()
         {
             UserFirstName = user.UserFirstName,
             UserSecondName = user.UserSecondName,

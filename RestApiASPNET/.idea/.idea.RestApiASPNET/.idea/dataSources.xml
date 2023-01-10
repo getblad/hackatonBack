@@ -8,5 +8,12 @@
       <jdbc-url>Server=localhost;Database=HP</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="@Server=tcp:hachathon.database.windows.net" uuid="58603567-a6ec-4138-9990-15749c564187">
+      <driver-ref>azure.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://hachathon.database.windows.net:1433;database=HP</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
