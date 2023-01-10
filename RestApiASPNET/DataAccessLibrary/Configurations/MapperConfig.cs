@@ -10,6 +10,7 @@ public class MapperConfig:Profile
         CreateMap<TeamDtoAdmin, Team>().ReverseMap();
         CreateMap<UserDtoAdmin, User>().ReverseMap();
         CreateMap<UserDtoPublic, User>().ReverseMap();
+        // CreateMap<List<UserDtoAdmin>, List<User>>().ReverseMap();
 
     }
 }

@@ -16,6 +16,7 @@ public partial class Team
 
     public int TeamCapitanId { get; set; }
 
+    [ForeignKey("CreateUser")]
     public int CreateUserId { get; set; }
 
     [ForeignKey("UpdateUser")]

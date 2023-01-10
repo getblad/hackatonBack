@@ -464,7 +464,6 @@ public partial class HpContext : DbContext
             entity.HasIndex(e => e.TeamId, "IX_team").IsUnique();
 
             entity.Property(e => e.TeamId)
-                .ValueGeneratedNever()
                 .HasColumnName("team_id");
             entity.Property(e => e.CreateTime)
                 .HasDefaultValueSql("(getdate())")

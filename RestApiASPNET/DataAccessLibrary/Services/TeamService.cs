@@ -1,5 +1,6 @@
 ﻿using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Services;
 
@@ -10,47 +11,20 @@ public class TeamService:ITeamService
     {
         _context = context;
     }
-    public List<TeamDtoAdmin> GetTeams()
+    public List<Team> GetTeams()
     {
        var dbTeams = _context.Teams.Where(e => e.RowStatusId == (int)StatusEnums.Active).ToList();
-       List<TeamDtoAdmin> teamAdmins = new List<TeamDtoAdmin>();
-       foreach (var team in dbTeams)
-       {
-           teamAdmins.Add(_dbTeamAdmin(team));
-       }
-
-       return teamAdmins;
+       
+       return dbTeams;
     }
 
     public void AddTeam(Team newTeam)
     {
         try
         {
-            
-            // Team addingTeam = new Team
-            // {
-            //     
-            //     TeamName = newTeamDto.TeamName,
-            //     
-            //     TeamAvatar = newTeamDto.TeamAvatar,
-            //     TeamCapitanId = newTeamDto.TeamCapitanId,
-            //     TeamId = newTeamDto.TeamId,
-            //     CreateUserId = newTeamDto.CreateUserId,
-            //     CreateUser = null,
-            //     UpdateUserId = newTeamDto.UpdateUserId,
-            //     UpdateUser = null,
-            //     CreateTime = DateTime.Now,
-            //     UpdateTime = DateTime.Now,
-            //     RowStatusId = (int)StatusEnums.Active,
-            //     RowStatus = null,
-            //     
-            // };
-            //  
-             _context.Teams.Add(newTeam);
-            
+            _context.Teams.Add(newTeam);
             _context.SaveChanges();
            
-
         }
         catch (Exception e)
         {
@@ -62,7 +36,32 @@ public class TeamService:ITeamService
 
     public void UpdateTeam(Team team)
     {
-        throw new NotImplementedException();
+        var local =  _context.Teams.FirstOrDefault(entry => entry.TeamId == team.TeamId);
+            
+        // check if local is not null
+        if (local == null)
+        {
+            // detach
+            // var a = _context.Entry(local);
+            // _context.Entry(local).State = EntityState.Detached;
+            throw new Exception("No such team");
+        }
+
+        team.CreateUserId = local.CreateUserId;
+        team.CreateUser = local.CreateUser;
+        team.UpdateUser = local.UpdateUser;
+        team.CreateTime = local.CreateTime;
+        team.UpdateTime = DateTime.Now;
+        team.RowStatus = local.RowStatus;
+        team.RowStatusId = local.RowStatusId;
+        
+        
+        var entry = _context.Entry(local);
+        entry.CurrentValues.SetValues(team);
+        entry.State = EntityState.Modified;
+        _context.SaveChanges();
+
+
     }
 
     public void DeleteTeam(int id)

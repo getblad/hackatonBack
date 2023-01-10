@@ -61,20 +61,20 @@ public partial class User
     public DateTime UserBirthday { get; set; }
     
     [Column("user_birthday_visibility")]
-    [Required]
+    
     public bool UserBirthdayVisibility { get; set; }
 
     [Column("user_github")]
-    public string UserGitHub { get; set; } = null!;
+    public string? UserGitHub { get; set; } = null!;
     
     [Column("user_twitter")]
-    public string UserTwitter { get; set; } = null!;
+    public string? UserTwitter { get; set; } = null!;
     
     [Column("user_instagram")]
-    public string UserInstagram { get; set; } = null!;
+    public string? UserInstagram { get; set; } = null!;
 
     [Column("user_facebook")]
-    public string UserFacebook { get; set; } = null;
+    public string? UserFacebook { get; set; } = null!;
     
     
     public virtual ICollection<EventMission> EventMissionCreateUsers { get; } = new List<EventMission>();
@@ -145,6 +145,20 @@ public class UserDtoAdmin
     
     public DateTime UpdateTime { get; set; }
     
+    public int CreateUserId { get; set; }
+    
     public int UpdateUserId { get; set; }
+    
+    public DateTime UserBirthday { get; set; }
+
+    public bool UserBirthdayVisibility { get; set; }
+    
+    public string? UserGitHub { get; set; } = null!;
+    
+    public string? UserTwitter { get; set; } = null!;
+    
+    public string? UserInstagram { get; set; } = null!;
+    
+    public string? UserFacebook { get; set; } = null!;
     
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using DataAccessLibrary;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -22,18 +23,14 @@ namespace RestApiASPNET.Controllers
             _mapper = mapper;
         }
         
-
-
-     
-
-        
         [HttpGet]
         // [Authorize]
-        public List<UserDtoAdmin> GetUsers()
+        public JsonResult GetUsers()
         {
-            // var json = new JsonResult(_userService.GetUsersSys());
-            var users = new List<UserDtoAdmin> { _mapper.Map<UserDtoAdmin>(_userService.GetUsersSys()) };
-            return users ;
+            
+            var userDb = _userService.GetUsersSys();
+            var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
+            return new JsonResult(Ok(userAdmins).Value);
         }
 
         [HttpGet( "{userId:int}")]
@@ -61,7 +58,11 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                _userService.AddUser(newUserDto);
+                var newUser = _mapper.Map<User>(newUserDto);
+                newUser.CreateTime = DateTime.Now;
+                newUser.UpdateTime = DateTime.Now;
+                newUser.RowStatusId = (int)StatusEnums.Active;
+                _userService.AddUser(newUser);
                 return new JsonResult(Ok("User is added"));
 
 
@@ -69,6 +70,7 @@ namespace RestApiASPNET.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
+                return new JsonResult(BadRequest(e.Message));
             }
 
             return new JsonResult(Ok(newUserDto));
@@ -81,19 +83,25 @@ namespace RestApiASPNET.Controllers
             
                 _userService.DeleteUser(userId);
                 return new JsonResult(Ok("Object was deleted"));
-            
-
-            
+                
         }
 
         [HttpPut]
         public JsonResult UpdateUser(UserDtoAdmin userDto)
         {
-            var user = _mapper.Map<User>(userDto);
-            
-            
-            _userService.UpdateUser(user);
-            return new JsonResult(Ok("Update is complete"));
+            try
+            {
+                var user = _mapper.Map<User>(userDto);
+                
+                
+                _userService.UpdateUser(user);
+                return new JsonResult(Ok("Update is complete"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new JsonResult(BadRequest(e.Message));
+            }
         }
     }
 }
