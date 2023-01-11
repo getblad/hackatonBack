@@ -4,6 +4,7 @@ using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic.CompilerServices;
+using System;
 
 
 namespace DataAccessLibrary.Services;
@@ -27,7 +28,7 @@ public class UserService:IUserService
             
             return usersDb!;
         }
-        catch(Exception e)
+        catch(System.Exception e)
         {
             Console.WriteLine(e);
             throw;
@@ -43,7 +44,7 @@ public class UserService:IUserService
            
 
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             Console.WriteLine(e);
             throw;

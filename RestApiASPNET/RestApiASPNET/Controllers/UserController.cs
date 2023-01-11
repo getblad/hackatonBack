@@ -2,6 +2,7 @@ using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,36 +12,35 @@ namespace RestApiASPNET.Controllers
     [Route("api/Users/")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly ILogger<UsersController> _logger;
         private readonly IMapper _mapper;
+        private readonly IDbService<User> _dbService;
 
 
-        public UsersController(IUserService userService , ILogger<UsersController> logger, IMapper mapper)
+        public UsersController( ILogger<UsersController> logger, IMapper mapper, IDbService<User> dbService)
         {
-            _userService = userService;
             _logger = logger;
             _mapper = mapper;
+            _dbService = dbService;
         }
         
         [HttpGet]
         // [Authorize]
         public JsonResult GetUsers()
         {
-            
-            var userDb = _userService.GetUsersSys();
+            var userDb = _dbService.GetAll();
             var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
             return new JsonResult(Ok(userAdmins).Value);
         }
 
         [HttpGet( "{userId:int}")]
         
-        // [Authorize(Policy = "Administrator")]
+        // [Authorize(Roles = "SystemAdmin")]
         public JsonResult GetUserById(int userId)
         {
             try
             {
-                var userDb = _userService.SingleUser(userId);
+                var userDb = _dbService.GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
                 return new JsonResult(Ok(user).Value);
 
@@ -62,8 +62,8 @@ namespace RestApiASPNET.Controllers
                 newUser.CreateTime = DateTime.Now;
                 newUser.UpdateTime = DateTime.Now;
                 newUser.RowStatusId = (int)StatusEnums.Active;
-                _userService.AddUser(newUser);
-                return new JsonResult(Ok("User is added"));
+                var user = _dbService.Create(newUser);
+                return new JsonResult(Ok(user));
 
 
             }
@@ -73,7 +73,7 @@ namespace RestApiASPNET.Controllers
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(Ok(newUserDto));
+            // return new JsonResult(Ok(newUserDto));
 
         }
 
@@ -81,7 +81,7 @@ namespace RestApiASPNET.Controllers
         public JsonResult DeleteUser(int userId)
         {
             
-                _userService.DeleteUser(userId);
+                _dbService.Delete(userId);
                 return new JsonResult(Ok("Object was deleted"));
                 
         }
@@ -94,7 +94,7 @@ namespace RestApiASPNET.Controllers
                 var user = _mapper.Map<User>(userDto);
                 
                 
-                _userService.UpdateUser(user);
+               _dbService.Update(user.UserId,user);
                 return new JsonResult(Ok("Update is complete"));
             }
             catch (Exception e)

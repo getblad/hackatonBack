@@ -13,7 +13,8 @@ public class TeamService:ITeamService
     }
     public List<Team> GetTeams()
     {
-       var dbTeams = _context.Teams.Where(e => e.RowStatusId == (int)StatusEnums.Active).ToList();
+       var dbTeams = _context.Teams.Where(e => e.RowStatusId == (int)StatusEnums.Active)
+           .ToList();
        
        return dbTeams;
     }
@@ -80,20 +81,5 @@ public class TeamService:ITeamService
         }
     
     }
-
-    private TeamDtoAdmin _dbTeamAdmin(Team team)
-    {
-        return new TeamDtoAdmin
-        {
-            TeamId = team.TeamId,
-            TeamName = team.TeamName,
-            TeamAvatar = team.TeamAvatar,
-            TeamCapitanId = team.TeamCapitanId,
-            CreateUserId = team.CreateUserId,
-            UpdateUserId = team.UpdateUserId,
-            CreateTime = team.CreateTime,
-            UpdateTime = team.UpdateTime,
-
-        };
-    }
+    
 }

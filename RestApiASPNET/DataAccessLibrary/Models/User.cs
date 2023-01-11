@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Models;
 
-public partial class User
+public partial class User : IStatus
 {
     [Key]
     

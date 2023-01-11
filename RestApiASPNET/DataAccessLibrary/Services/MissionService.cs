@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Services;
 
-public class MissionService:IMissionService
+public class MissionService
+
 {
     private readonly HpContext _context;
 
@@ -27,7 +28,7 @@ public class MissionService:IMissionService
             _context.Missions.Add(newMission);
             _context.SaveChanges();
         }
-        catch(Exception e)
+        catch(System.Exception e)
         {
             Console.WriteLine(e);
         }
@@ -64,6 +65,8 @@ public class MissionService:IMissionService
         catch(Exception e)
         {
             Console.WriteLine(e);
+            Console.WriteLine("s");
+
             throw;
         }
     }

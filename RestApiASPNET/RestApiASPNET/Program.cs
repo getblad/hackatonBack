@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddScoped(typeof(IDbService<>), typeof(DbService<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -69,6 +70,10 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Models;
@@ -36,6 +37,7 @@ public partial class Team
 
     public virtual ICollection<EventTeam> EventTeams { get; } = new List<EventTeam>();
 
+    
     public virtual RowStatus RowStatus { get; set; } = null!;
 
     public virtual ICollection<User> Users { get; } = new List<User>();
@@ -56,4 +58,7 @@ public class TeamDtoAdmin
     public DateTime? CreateTime { get; set; }
 
     public DateTime? UpdateTime { get; set; }
+    
+    
+   
 }

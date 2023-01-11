@@ -5,9 +5,9 @@ namespace DataAccessLibrary.Repositories;
 
 public interface IMissionService
 {
-    Task<List<Mission>> GetMissions();
+    List<Mission> GetMissions();
     void AddMission(Mission newMission);
-    void UpdateMission(long id, Mission mission);
-    Mission SingleMission(long id);
-    void DeleteMission(long id);
+    void UpdateMission(Mission mission);
+    Mission SingleMission(int id);
+    void DeleteMission(int id);
 }
