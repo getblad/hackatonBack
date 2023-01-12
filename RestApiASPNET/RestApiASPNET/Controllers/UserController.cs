@@ -1,10 +1,7 @@
 using AutoMapper;
 using DataAccessLibrary;
-using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
-using DataAccessLibrary.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -28,9 +25,9 @@ namespace RestApiASPNET.Controllers
 
         [HttpGet]
         // [Authorize]
-        public JsonResult GetUsers()
+        public async Task<JsonResult> GetUsers()
         {
-            var userDb = _dbService.GetAll();
+            var userDb = await _dbService.GetAll();
             var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
             return new JsonResult(Ok(userAdmins).Value);
         }
@@ -38,11 +35,11 @@ namespace RestApiASPNET.Controllers
         [HttpGet("{userId:int}")]
 
         // [Authorize(Roles = "SystemAdmin")]
-        public JsonResult GetUserById(int userId)
+        public async Task<JsonResult> GetUserById(int userId)
         {
             try
             {
-                var userDb = _dbService.GetOne(userId);
+                var userDb = await _dbService.GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
                 return new JsonResult(Ok(user).Value);
 
@@ -55,7 +52,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPost]
-        public JsonResult PostUser(UserDtoAdmin newUserDto)
+        public async Task<JsonResult> PostUser(UserDtoAdmin newUserDto)
         {
             try
             {
@@ -63,7 +60,7 @@ namespace RestApiASPNET.Controllers
                 newUser.CreateTime = DateTime.Now;
                 newUser.UpdateTime = DateTime.Now;
                 newUser.RowStatusId = (int)StatusEnums.Active;
-                var user = _dbService.Create(newUser);
+                var user = await _dbService.Create(newUser);
                 return new JsonResult(Ok(user));
             }
             catch (Exception e)
@@ -74,30 +71,30 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpDelete]
-        public JsonResult DeleteUser(int userId)
+        public async Task<JsonResult> DeleteUser(int userId)
         {
 
-            _dbService.Delete(userId);
+            await _dbService.Delete(userId);
             return new JsonResult(Ok("Object was deleted"));
 
         }
 
         [HttpPut]
-        public JsonResult UpdateUser(UserDtoAdmin userDto)
+        public async Task<JsonResult> UpdateUser(UserDtoAdmin userDto)
         {
             try
             {
                 var user = _mapper.Map<User>(userDto);
 
 
-                _dbService.Update(user.UserId, user);
+                await _dbService.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }
             catch (Exception e)
             {
                 return ResponseHelper.HandleException(e);
             }
-
+            
         }
     }
 }

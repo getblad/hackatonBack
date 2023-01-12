@@ -18,12 +18,12 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
     }
 
 
-    public TModel Create(TModel model)
+    public async Task<TModel> Create(TModel model)
     {
         try
         {
-            _dbSet.Add(model);
-            _context.SaveChanges();
+            await _dbSet.AddAsync(model);
+            await _context.SaveChangesAsync();
             return model;
         }
         catch (DbUpdateException exception) when(exception.InnerException is SqlException)
@@ -34,9 +34,9 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
         
     }
 
-    public TModel Update(int id,TModel model)
+    public async Task<TModel> Update(int id, TModel model)
     {
-        var local =  _dbSet.Find(id);
+        var local =  await _dbSet.FindAsync(id);
             
         // check if local is not null
         if (local == null)
@@ -46,17 +46,17 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
             throw new NotFoundException("No such item");
         }
         _context.Entry(local).CurrentValues.SetValues(model);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return local;
 
     }
 
-    public List<TModel> GetAll()
+    public async Task<List<TModel>> GetAll()
     {
         try
         {
-            var dbValues = _dbSet.Where(e => e.RowStatusId == (int)StatusEnums.Active)
-            .ToList();
+            var dbValues = await _dbSet.Where(e => e.RowStatusId == (int)StatusEnums.Active)
+            .ToListAsync();
             return dbValues;
         }
         catch (Exception e)
@@ -65,13 +65,13 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
             throw;
         }
     }
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
         try
         {
-            var entry = _dbSet.Find(id);
+            var entry = await _dbSet.FindAsync(id);
             if (entry != null) entry.RowStatusId = (int)StatusEnums.Delete;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         catch (Exception e)
         {
@@ -81,9 +81,9 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
 
 
     }
-    public TModel GetOne(int id)
+    public  async Task<TModel> GetOne(int id)
     {
-        var entry = _dbSet.Find(id);
+        var entry = await _dbSet.FindAsync(id);
         switch (entry)
         {
             case { RowStatusId: (int)StatusEnums.Active }:
