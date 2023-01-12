@@ -1,6 +1,7 @@
 ﻿using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Services;
@@ -25,10 +26,10 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
             _context.SaveChanges();
             return model;
         }
-        catch (Exception e)
+        catch (DbUpdateException exception) when(exception.InnerException is SqlException)
         {
-            Console.WriteLine(e);
-            throw;
+            Console.WriteLine();
+            throw new AlreadyExistingException("");
         }
         
     }
@@ -52,10 +53,17 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
 
     public List<TModel> GetAll()
     {
-        var dbValues = _dbSet.Where(e => e.RowStatusId == (int)StatusEnums.Active)
+        try
+        {
+            var dbValues = _dbSet.Where(e => e.RowStatusId == (int)StatusEnums.Active)
             .ToList();
-               
-        return dbValues;
+            return dbValues;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     public void Delete(int id)
     {
@@ -84,7 +92,7 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
                 break;
         }
 
-        throw new ("No such object");
+        throw new NotFoundException();
 
     }
 }

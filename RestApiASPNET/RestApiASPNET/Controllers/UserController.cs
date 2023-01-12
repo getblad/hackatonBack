@@ -1,10 +1,12 @@
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers
 {
@@ -16,14 +18,14 @@ namespace RestApiASPNET.Controllers
         private readonly IMapper _mapper;
         private readonly IDbService<User> _dbService;
 
-
-        public UsersController( ILogger<UsersController> logger, IMapper mapper, IDbService<User> dbService)
+        public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbService<User> dbService
+            )
         {
             _logger = logger;
             _mapper = mapper;
             _dbService = dbService;
         }
-        
+
         [HttpGet]
         // [Authorize]
         public JsonResult GetUsers()
@@ -33,8 +35,8 @@ namespace RestApiASPNET.Controllers
             return new JsonResult(Ok(userAdmins).Value);
         }
 
-        [HttpGet( "{userId:int}")]
-        
+        [HttpGet("{userId:int}")]
+
         // [Authorize(Roles = "SystemAdmin")]
         public JsonResult GetUserById(int userId)
         {
@@ -47,8 +49,7 @@ namespace RestApiASPNET.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(NotFound(e.Message));
-                
+                return ResponseHelper.HandleException(e);
             }
 
         }
@@ -64,26 +65,21 @@ namespace RestApiASPNET.Controllers
                 newUser.RowStatusId = (int)StatusEnums.Active;
                 var user = _dbService.Create(newUser);
                 return new JsonResult(Ok(user));
-
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine(e);
-                return new JsonResult(BadRequest(e.Message));
+                return ResponseHelper.HandleException(e);
             }
-
             // return new JsonResult(Ok(newUserDto));
-
         }
 
         [HttpDelete]
         public JsonResult DeleteUser(int userId)
         {
-            
-                _dbService.Delete(userId);
-                return new JsonResult(Ok("Object was deleted"));
-                
+
+            _dbService.Delete(userId);
+            return new JsonResult(Ok("Object was deleted"));
+
         }
 
         [HttpPut]
@@ -92,16 +88,16 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var user = _mapper.Map<User>(userDto);
-                
-                
-               _dbService.Update(user.UserId,user);
+
+
+                _dbService.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return new JsonResult(BadRequest(e.Message));
+                return ResponseHelper.HandleException(e);
             }
+
         }
     }
 }
