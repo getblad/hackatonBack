@@ -59,8 +59,7 @@ public partial class HpContext : DbContext
                 .HasColumnName("create_time");
             entity.Property(e => e.CreateUserId).HasColumnName("create_user_id");
             entity.Property(e => e.EventCreatedDate)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("event_created_date");
             entity.Property(e => e.EventDescription)
                 .HasMaxLength(2000)
@@ -404,7 +403,7 @@ public partial class HpContext : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("Mission_language");
-            entity.Property(e => e.MissionMainMissionId).HasColumnName("Mission_main_Mission_id");
+            entity.Property(e => e.MissionMainTaskId).HasColumnName("Mission_main_task_id");
             entity.Property(e => e.MissionName)
                 .HasMaxLength(100)
                 .IsUnicode(false)

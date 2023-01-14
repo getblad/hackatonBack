@@ -1,6 +1,8 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Repositories;
 
-public partial class EventMission
+namespace DataAccessLibrary.Models;
+
+public partial class EventMission:IStatus
 {
     public int EventMissionId { get; set; }
 
@@ -39,4 +41,33 @@ public partial class EventMission
     public virtual Mission Mission { get; set; } = null!;
 
     public virtual User UpdateUser { get; set; } = null!;
+}
+public class EventMissionDto
+{
+    public int EventMissionId { get; set; }
+
+    public int EventId { get; set; }
+
+    public int MissionId { get; set; }
+
+    public string? EventMissionLanguage { get; set; }
+
+    public TimeSpan? EventMissionExecutionTime { get; set; }
+
+    public int? EventMissionPoint { get; set; }
+
+    public TimeSpan? EventMissionStepTimeFine { get; set; }
+
+    public int? EventMissionStepPointFine { get; set; }
+
+    public int CreateUserId { get; set; }
+
+    public int UpdateUserId { get; set; }
+
+    public DateTime CreateTime { get; set; }
+
+    public DateTime UpdateTime { get; set; }
+
+    public int RowStatusId { get; set; }
+
 }

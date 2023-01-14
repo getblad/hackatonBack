@@ -94,3 +94,9 @@ C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Auth0.AuthenticationApi.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Auth0.Core.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Auth0.ManagementApi.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Auth0Net.DependencyInjection.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\LazyCache.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\LazyCache.AspNetCore.dll

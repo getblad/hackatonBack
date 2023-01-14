@@ -1,6 +1,9 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using DataAccessLibrary.Repositories;
 
-public partial class Event
+namespace DataAccessLibrary.Models;
+
+public partial class Event:IStatus
 {
     public int EventId { get; set; }
 
@@ -12,7 +15,8 @@ public partial class Event
 
     public DateTime EventEndTime { get; set; }
 
-    public byte[] EventCreatedDate { get; set; } = null!;
+    [Column("event_created_date")]
+    public DateTime EventCreatedDate { get; set; } 
 
     public int EventStatusId { get; set; }
 
@@ -41,4 +45,38 @@ public partial class Event
     public virtual ICollection<EventTeam> EventTeams { get; } = new List<EventTeam>();
 
     public virtual ICollection<EventUser> EventUsers { get; } = new List<EventUser>();
+}
+public class EventDtoAdmin
+{
+    public int EventId { get; set; }
+
+    public string EventName { get; set; } = null!;
+
+    public string EventDescription { get; set; } = null!;
+
+    public DateTime EventStartTime { get; set; }
+
+    public DateTime EventEndTime { get; set; }
+
+    public  DateTime EventCreatedDate { get; set; } 
+
+    public int EventStatusId { get; set; }
+
+    public int? EventMaxCountOfTeamMembers { get; set; }
+
+    public int? EventMinCountOfTeamMembers { get; set; }
+
+    public int? EventMaxCountOfEventMembers { get; set; }
+
+    public int? EventMinCountOfEventMembers { get; set; }
+
+    public int CreateUserId { get; set; }
+
+    public int UpdateUserId { get; set; }
+
+    public DateTime CreateTime { get; set; }
+
+    public DateTime UpdateTime { get; set; }
+
+    public virtual ICollection<MissionDtoAdmin>? Missions { get; } = new List<MissionDtoAdmin>();
 }

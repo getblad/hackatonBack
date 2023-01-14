@@ -60,10 +60,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     //     NameClaimType = ClaimTypes.NameIdentifier
     // };
 });
-
+builder.Services.AddAuth0AuthenticationClient(config =>
+{
+    config.Domain = domain;
+    config.ClientId = builder.Configuration["Auth0Management:ClientId"];
+    config.ClientSecret = builder.Configuration["Auth0Management:ClientSecret"];
+});
+builder.Services.AddAuth0ManagementClient().AddManagementAccessToken();
 builder.Services.AddAuthorization(options =>
 {
-    // options.AddPolicy("Administrator", policy => policy.RequireClaim("http://hackaton-platform.eu.auth0.com/claim/roles", "SystemAdmin"));
     options.AddPolicy("read:user", policy => policy.Requirements.Add(new HasScopeRequirement("read:user", domain)));
     options.AddPolicy("read:users", policy => policy.Requirements.Add(new HasScopeRequirement("read:users", domain)));
 });
@@ -71,6 +76,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<EventService, EventService>();
+
 
 builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>

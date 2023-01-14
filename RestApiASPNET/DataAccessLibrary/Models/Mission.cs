@@ -1,6 +1,8 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Repositories;
 
-public partial class Mission
+namespace DataAccessLibrary.Models;
+
+public partial class Mission:IStatus
 {
     public int MissionId { get; set; }
 
@@ -24,7 +26,7 @@ public partial class Mission
 
     public int? MissionStepPointFine { get; set; }
 
-    public int? MissionMainMissionId { get; set; }
+    public int? MissionMainTaskId { get; set; }
 
     public int CreateUserId { get; set; }
 
@@ -45,4 +47,41 @@ public partial class Mission
     public virtual MissionType MissionType { get; set; } = null!;
 
     public virtual User UpdateUser { get; set; } = null!;
+}
+
+public class MissionDtoAdmin
+{
+    public int MissionId { get; set; }
+
+    public int MissionTypeId { get; set; }
+
+    public string MissionName { get; set; } = null!;
+
+    public string MissionDescription { get; set; } = null!;
+
+    public string MissionLanguage { get; set; } = null!;
+
+    public string MissionAuthor { get; set; } = null!;
+
+    public string MissionUrlFileDescription { get; set; } = null!;
+
+    public TimeSpan MissionExecutionTime { get; set; }
+
+    public int MissionPoint { get; set; }
+
+    public TimeSpan? MissionStepTimeFine { get; set; }
+
+    public int? MissionStepPointFine { get; set; }
+
+    public int? MissionMainTaskId { get; set; }
+
+    public int CreateUserId { get; set; }
+
+    public int UpdateUserId { get; set; }
+    
+    public DateTime CreateTime { get; set; }
+
+    public DateTime UpdateTime { get; set; }
+    
+    
 }

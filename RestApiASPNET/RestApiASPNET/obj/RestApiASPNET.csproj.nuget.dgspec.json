@@ -119,6 +119,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Auth0Net.DependencyInjection": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[6.0.12, )"

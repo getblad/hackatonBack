@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Models;
 
-public partial class Team
+public partial class Team:IStatus
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

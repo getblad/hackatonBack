@@ -10,6 +10,12 @@ public class MapperConfig:Profile
         CreateMap<TeamDtoAdmin, Team>().ReverseMap();
         CreateMap<UserDtoAdmin, User>().ReverseMap();
         CreateMap<UserDtoPublic, User>().ReverseMap();
+        CreateMap<MissionDtoAdmin, Mission>().ReverseMap();
+        CreateMap<Event, EventDtoAdmin>()
+            .ForMember(a => a.Missions, opt => opt
+            .MapFrom(src => src.EventMissions.Select(a => a.Mission)
+                .ToList())).ReverseMap();
+        CreateMap<EventMissionDto, EventMission>().ReverseMap();
         // CreateMap<List<UserDtoAdmin>, List<User>>().ReverseMap();
 
     }
