@@ -2,7 +2,7 @@
 
 namespace DataAccessLibrary.Repositories;
 
-public interface IDbService<TModel> where TModel:class
+public interface IDbRepositories<TModel> where TModel:class, IStatus
 {
 
     public Task<TModel> Create(TModel model);
@@ -11,7 +11,10 @@ public interface IDbService<TModel> where TModel:class
 
     public Task<List<TModel>> GetAll();
 
+
     public Task<TModel> GetOne(int id);
 
     public Task Delete(int id);
+
+    public DbRepositories<TModel> Get(List<string> includes);
 }

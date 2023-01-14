@@ -2,7 +2,6 @@ using System.Security.Claims;
 using DataAccessLibrary.Configurations;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
-using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
-builder.Services.AddScoped(typeof(IDbService<>), typeof(DbService<>));
+builder.Services.AddScoped(typeof(IDbRepositories<>), typeof(DbRepositories<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -74,9 +73,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<EventService, EventService>();
+builder.Services.AddScoped<EventRepositories, EventRepositories>();
 
 
 builder.Services.AddControllersWithViews()

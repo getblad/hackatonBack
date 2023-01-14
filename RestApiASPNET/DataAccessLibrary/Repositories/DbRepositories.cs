@@ -1,20 +1,20 @@
 ﻿using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccessLibrary.Services;
+namespace DataAccessLibrary.Repositories;
 
-public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
+public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class, IStatus
 {
     private readonly HpContext _context;
-    private readonly DbSet<TModel> _dbSet;
+    private  IQueryable<TModel> _query;
 
-    public DbService(HpContext context)
+    public DbRepositories(HpContext context)
     {
         _context = context;
-        _dbSet = _context.Set<TModel>();
+        _query = _context.Set<TModel>();
+
     }
 
 
@@ -22,7 +22,7 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
     {
         try
         {
-            await _dbSet.AddAsync(model);
+            await ((DbSet<TModel>)_query).AddAsync(model);
             await _context.SaveChangesAsync();
             return model;
         }
@@ -36,7 +36,8 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
 
     public async Task<TModel> Update(int id, TModel model)
     {
-        var local =  await _dbSet.FindAsync(id);
+        
+        var local =  await ((DbSet<TModel>)_query).FindAsync(id);
             
         // check if local is not null
         if (local == null)
@@ -51,25 +52,32 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
 
     }
 
+    public DbRepositories<TModel> Get(List<string> includes)
+    {
+        includes.ForEach(i => _query = _query.Include(i));
+        return this;
+    }
+
     public async Task<List<TModel>> GetAll()
     {
         try
         {
-            var dbValues = await _dbSet.Where(e => e.RowStatusId == (int)StatusEnums.Active)
-            .ToListAsync();
-            return dbValues;
+            return await _query.Where(e => e.RowStatusId == (int)StatusEnums.Active).ToListAsync();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
+       
     }
+    // public DbRepositories<TModel> GetAllThenInclude()
+
     public async Task Delete(int id)
     {
         try
         {
-            var entry = await _dbSet.FindAsync(id);
+            var entry = await ((DbSet<TModel>)_query).FindAsync(id);
             if (entry != null) entry.RowStatusId = (int)StatusEnums.Delete;
             await _context.SaveChangesAsync();
         }
@@ -83,7 +91,7 @@ public class DbService<TModel>:IDbService<TModel> where TModel : class, IStatus
     }
     public  async Task<TModel> GetOne(int id)
     {
-        var entry = await _dbSet.FindAsync(id);
+        var entry = await _context.Set<TModel>().FindAsync(id);
         switch (entry)
         {
             case { RowStatusId: (int)StatusEnums.Active }:

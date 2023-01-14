@@ -2,7 +2,9 @@ using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers
@@ -13,21 +15,22 @@ namespace RestApiASPNET.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IMapper _mapper;
-        private readonly IDbService<User> _dbService;
+        private readonly IDbRepositories<User> _dbRepositories;
 
-        public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbService<User> dbService
+        public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbRepositories<User> dbRepositories
             )
         {
             _logger = logger;
             _mapper = mapper;
-            _dbService = dbService;
+            _dbRepositories = dbRepositories;
         }
 
         [HttpGet]
-        // [Authorize]
+        [Authorize]
         public async Task<JsonResult> GetUsers()
         {
-            var userDb = await _dbService.GetAll();
+            var userDb = await _dbRepositories.GetAll();
+            
             var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
             return new JsonResult(Ok(userAdmins).Value);
         }
@@ -39,7 +42,8 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var userDb = await _dbService.GetOne(userId);
+                var includes = new List<string>() { "Team" };
+                var userDb = await _dbRepositories.Get(includes).GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
                 return new JsonResult(Ok(user).Value);
 
@@ -60,7 +64,7 @@ namespace RestApiASPNET.Controllers
                 newUser.CreateTime = DateTime.Now;
                 newUser.UpdateTime = DateTime.Now;
                 newUser.RowStatusId = (int)StatusEnums.Active;
-                var user = await _dbService.Create(newUser);
+                var user = await _dbRepositories.Create(newUser);
                 return new JsonResult(Ok(user));
             }
             catch (Exception e)
@@ -74,7 +78,7 @@ namespace RestApiASPNET.Controllers
         public async Task<JsonResult> DeleteUser(int userId)
         {
 
-            await _dbService.Delete(userId);
+            await _dbRepositories.Delete(userId);
             return new JsonResult(Ok("Object was deleted"));
 
         }
@@ -87,7 +91,7 @@ namespace RestApiASPNET.Controllers
                 var user = _mapper.Map<User>(userDto);
 
 
-                await _dbService.Update(user.UserId, user);
+                await _dbRepositories.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }
             catch (Exception e)

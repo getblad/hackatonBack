@@ -2,7 +2,6 @@ using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
-using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
@@ -13,18 +12,18 @@ namespace RestApiASPNET.Controllers
     [Route("api/Events/Mission")]
     public class EventMissionController : ControllerBase
     {
-        private readonly IDbService<EventMission> _dbService;
+        private readonly IDbRepositories<EventMission> _dbRepositories;
         private readonly ILogger<EventMissionController> _logger;
         private readonly IMapper _mapper;
-        private readonly EventService _eventService;
+        private readonly EventRepositories _eventRepositories;
 
 
-        public EventMissionController(IDbService<EventMission> dbService, ILogger<EventMissionController> logger, IMapper mapper, EventService eventService)
+        public EventMissionController(IDbRepositories<EventMission> dbRepositories, ILogger<EventMissionController> logger, IMapper mapper, EventRepositories eventRepositories)
         {
-            _dbService = dbService;
+            _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
-            _eventService = eventService;
+            _eventRepositories = eventRepositories;
         }
 
 
@@ -35,7 +34,7 @@ namespace RestApiASPNET.Controllers
             try
             {
 
-                var @event = await _eventService.GetEvent(eventId);
+                var @event = await _eventRepositories.GetEvent(eventId);
                 
                 return new JsonResult(_mapper.Map<EventDtoAdmin>(@event));
             }
@@ -52,7 +51,7 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var eventMission = _mapper.Map<EventMission>(newEventMission);
-                await _eventService.AssignMission(eventMission);
+                await _eventRepositories.AssignMission(eventMission);
                 return new JsonResult(Ok("Mission assigned"));
 
             }

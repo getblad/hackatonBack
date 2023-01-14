@@ -1,22 +1,23 @@
 ﻿using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccessLibrary.Services;
+namespace DataAccessLibrary.Repositories;
 
-public class EventService
+public class EventRepositories:DbRepositories<Event>
 {
     private readonly HpContext _context;
 
-    public EventService(HpContext context)
+    public EventRepositories(HpContext context) : base(context)
     {
         _context = context;
     }
+    
     public async Task AssignMission(EventMission eventMission)
     {
         try
         {
+            
             await _context.EventMissions.AddAsync(eventMission);
             await _context.SaveChangesAsync();
             
@@ -35,7 +36,7 @@ public class EventService
         {
             var @event = await _context.Events.Include(a => a.EventMissions)
                 .ThenInclude(b => b.Mission).Where(events => events.EventId == eventId).FirstOrDefaultAsync();
-            return @event ?? throw new NotFoundException();
+            return (@event ?? throw new NotFoundException());
         }
         catch (Exception e)
         {

@@ -2,7 +2,6 @@ using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
-using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
@@ -13,14 +12,14 @@ namespace RestApiASPNET.Controllers
     [Route("api/Teams/")]
     public class TeamController : ControllerBase
     {
-        private readonly IDbService<Team> _dbService;
+        private readonly IDbRepositories<Team> _dbRepositories;
         private readonly ILogger<TeamController> _logger;
         private readonly IMapper _mapper;
 
 
-        public TeamController(IDbService<Team> dbService, ILogger<TeamController> logger, IMapper mapper)
+        public TeamController(IDbRepositories<Team> dbRepositories, ILogger<TeamController> logger, IMapper mapper)
         {
-            _dbService = dbService;
+            _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
         }
@@ -32,7 +31,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var dbTeams = await _dbService.GetAll();
+                var dbTeams = await _dbRepositories.GetAll();
                 var teamAdmins = dbTeams.Select(team => _mapper.Map<TeamDtoAdmin>(team)).ToList();
                 return new JsonResult(Ok(teamAdmins).Value);
             }
@@ -51,7 +50,7 @@ namespace RestApiASPNET.Controllers
                 newTeam.CreateTime = DateTime.Now;
                 newTeam.UpdateTime = DateTime.Now;
                 newTeam.RowStatusId = (int)StatusEnums.Active;
-                await _dbService.Create(newTeam);
+                await _dbRepositories.Create(newTeam);
                 return new JsonResult(Ok("Team is added"));
             }
             catch(Exception e)
@@ -65,7 +64,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             { 
-                 await _dbService.Delete(teamId);
+                 await _dbRepositories.Delete(teamId);
                 return new JsonResult(Ok("Team was deleted"));
             }
             catch (Exception e)
@@ -81,7 +80,7 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var team = _mapper.Map<Team>(newTeamDtoAdmin);
-                await _dbService.Update(team.TeamId,team);
+                await _dbRepositories.Update(team.TeamId,team);
                 return new JsonResult(Ok("Update is complete"));
             }
             catch (Exception e)
