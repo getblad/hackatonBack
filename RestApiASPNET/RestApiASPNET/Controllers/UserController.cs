@@ -66,7 +66,7 @@ namespace RestApiASPNET.Controllers
                 newUser.UpdateTime = DateTime.Now;
                 newUser.RowStatusId = (int)StatusEnums.Active;
                 var user = await _dbRepositories.Create(newUser);
-                return new JsonResult(Ok(user));
+                return new JsonResult(Ok(_mapper.Map<UserDtoAdmin>(user)));
             }
             catch (Exception e)
             {

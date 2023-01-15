@@ -3,6 +3,7 @@ using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static System.Console;
 
 namespace DataAccessLibrary.Repositories;
 
@@ -27,13 +28,26 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
             await _context.SaveChangesAsync();
             return model;
         }
-        catch (DbUpdateException exception) when(exception.InnerException is SqlException)
+        catch (DbUpdateException exception) when (exception.InnerException is SqlException)
         {
-            Console.WriteLine();
-            throw new AlreadyExistingException("");
+            switch (exception.InnerException.HResult)
+            {
+                case -2146232060:
+                    throw;
+                case -2146233088:
+                    throw new AlreadyExistingException("");
+            }
+
+            WriteLine();
+            throw;
         }
-        
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
     }
+
 
     public async Task<TModel> Update(int id, TModel model)
     {
@@ -88,7 +102,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
        
@@ -105,7 +119,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
 
@@ -131,7 +145,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
 

@@ -76,8 +76,9 @@ public partial class User : IStatus
 
     [Column("user_facebook")]
     public string? UserFacebook { get; set; } = null!;
-    
-    
+
+    [Column("user_auth0_id")] 
+    public string UserAuth0Id { get; set; } = null!;
     public virtual ICollection<EventMission> EventMissionCreateUsers { get; } = new List<EventMission>();
 
     public virtual ICollection<EventMission> EventMissionUpdateUsers { get; } = new List<EventMission>();
@@ -161,5 +162,7 @@ public class UserDtoAdmin
     public string? UserInstagram { get; set; } = null!;
     
     public string? UserFacebook { get; set; } = null!;
-    
+
+    public string UserAuth0Id { get; set; } = null!;
+
 }
