@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary.CustomExceptions;
+﻿using System.Linq.Expressions;
+using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +59,27 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         return this;
     }
 
+    public DbRepositories<TModel> Get(List<Expression<Func<TModel, object>>> includes)
+    {
+        includes.ForEach(i => _query = _query.Include(i));
+        return this;
+    }
+    // public DbRepositories<TModel> GetThenInclude()
+    // {
+    //     
+    // }
+
+    public DbRepositories<TModel> Where(Expression<Func<TModel,bool>> predicate)
+    {
+       _query = _query.Where(predicate);
+       return this;
+    }
+
+    public DbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
+    {
+        predicates.ForEach(predicate => _query = _query.Where(predicate));
+        return this;
+    }
     public async Task<List<TModel>> GetAll()
     {
         try
@@ -77,7 +99,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     {
         try
         {
-            var entry = await ((DbSet<TModel>)_query).FindAsync(id);
+            var entry = await _context.Set<TModel>().FindAsync(id);
             if (entry != null) entry.RowStatusId = (int)StatusEnums.Delete;
             await _context.SaveChangesAsync();
         }
@@ -89,15 +111,28 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
 
 
     }
-    public  async Task<TModel> GetOne(int id)
+    public  async Task<TModel> GetOne(int id, IEnumerable<string>? includes = null)
     {
-        var entry = await _context.Set<TModel>().FindAsync(id);
-        switch (entry)
+        try
         {
-            case { RowStatusId: (int)StatusEnums.Active }:
-                return entry;
-            case null:
-                break;
+            var entry = await _context.Set<TModel>().FindAsync(id);
+            if (includes != null)
+                foreach (var path in includes)
+                {
+                    await _context.Entry(entry).Reference(path).LoadAsync();
+                }
+            switch (entry)
+            {
+                case { RowStatusId: (int)StatusEnums.Active }:
+                    return entry;
+                case null:
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
 
         throw new NotFoundException();

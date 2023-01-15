@@ -78,5 +78,5 @@ public class EventDtoAdmin
 
     public DateTime UpdateTime { get; set; }
 
-    public virtual ICollection<MissionDtoAdmin>? Missions { get; } = new List<MissionDtoAdmin>();
+    public  ICollection<MissionDtoAdmin>? Missions { get; } = new List<MissionDtoAdmin>();
 }

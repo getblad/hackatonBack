@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary.Models;
+﻿using System.Linq.Expressions;
+using DataAccessLibrary.Models;
 
 namespace DataAccessLibrary.Repositories;
 
@@ -11,8 +12,10 @@ public interface IDbRepositories<TModel> where TModel:class, IStatus
 
     public Task<List<TModel>> GetAll();
 
+    public DbRepositories<TModel> Where(Expression<Func<TModel, bool>> predicate);
+    public DbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicate);
 
-    public Task<TModel> GetOne(int id);
+    public Task<TModel> GetOne(int id, IEnumerable<string> includes);
 
     public Task Delete(int id);
 
