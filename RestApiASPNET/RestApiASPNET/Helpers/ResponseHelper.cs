@@ -11,9 +11,9 @@ public static class ResponseHelper
         switch (e)
         {
             case NotFoundException ex:
-                return new JsonResult (ex.Message){StatusCode = StatusCodes.Status404NotFound};
+                return new JsonResult ("Not Found"){StatusCode = StatusCodes.Status404NotFound};
             case AlreadyExistingException ex:
-                return new JsonResult(ex.Message){StatusCode = StatusCodes.Status400BadRequest};;
+                return new JsonResult("Already existing element"){StatusCode = StatusCodes.Status400BadRequest};;
             default:
                 return new JsonResult("Error"){StatusCode = StatusCodes.Status400BadRequest};
         }

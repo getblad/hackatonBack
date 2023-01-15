@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary.CustomExceptions;
+﻿using System.Linq.Expressions;
+using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,5 +44,45 @@ public class EventRepositories:DbRepositories<Event>
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    public Task<Event> Create(Event model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Event> Update(int id, Event model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Event>> GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public DbRepositories<Event> Where(Expression<Func<Event, bool>> predicate)
+    {
+        throw new NotImplementedException();
+    }
+
+    public DbRepositories<Event> Where(List<Expression<Func<Event, bool>>> predicate)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Event> GetOne(int id, IEnumerable<string> includes)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Delete(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public DbRepositories<Event> Get(List<string> includes)
+    {
+        throw new NotImplementedException();
     }
 }
