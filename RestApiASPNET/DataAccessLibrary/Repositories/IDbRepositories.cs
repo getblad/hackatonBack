@@ -15,7 +15,7 @@ public interface IDbRepositories<TModel> where TModel:class, IStatus
     public DbRepositories<TModel> Where(Expression<Func<TModel, bool>> predicate);
     public DbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicate);
 
-    public Task<TModel> GetOne(int id, IEnumerable<string> includes);
+    public Task<TModel> GetOne(int id, IEnumerable<string>? includes = null);
 
     public Task Delete(int id);
 

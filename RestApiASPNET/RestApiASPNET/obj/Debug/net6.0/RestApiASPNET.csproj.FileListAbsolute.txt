@@ -100,3 +100,9 @@ C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Auth0Net.DependencyInjection.dll
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\LazyCache.dll
 C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\LazyCache.AspNetCore.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.AspNet.SignalR.Core.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.AspNet.SignalR.SystemWeb.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.Owin.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Microsoft.Owin.Security.dll
+C:\Users\Admin\masa-introduction\hackathon-platform\RestApiASPNET\RestApiASPNET\bin\Debug\net6.0\Owin.dll
