@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
+using WebSupergoo.ABCpdf10.Objects;
+using WebSupergoo.ABCpdf12.Objects;
 
 namespace DataAccessLibrary.Models;
 
@@ -20,7 +22,7 @@ public partial class User : IStatus
 
     public string UserEmail { get; set; } = null!;
 
-    
+   
 
     /// <summary>
     /// To store url to avatar image
@@ -130,14 +132,19 @@ public class UserDtoPublic
 
 public class UserDtoAdmin
 {
+	
+	public int UserId { get; set; }
 
-    public int UserId { get; set; }
+	[Required(ErrorMessage = "Fill in the First name field\r\n")]
+    [StringLength(20, MinimumLength = 3, ErrorMessage = "First name must be between 3 and 20 characters")]
+	public string UserFirstName { get; set; } = null!;
 
-    public string UserFirstName { get; set; } = null!;
+	[Required(ErrorMessage = "Fill in the Second name field\r\n")]
+	[StringLength(20, MinimumLength = 3, ErrorMessage = "Second name must be between 3 and 20 characters")]
+	public string UserSecondName { get; set; } = null!;
 
-    public string UserSecondName { get; set; } = null!;
 
-    public string UserEmail { get; set; } = null!;
+	public string UserEmail { get; set; } = null!;
     
     public string UserAvatar { get; set; } = null!;
     
@@ -150,19 +157,31 @@ public class UserDtoAdmin
     public int CreateUserId { get; set; }
     
     public int UpdateUserId { get; set; }
-    
-    public DateTime UserBirthday { get; set; }
 
-    public bool UserBirthdayVisibility { get; set; }
-    
-    public string? UserGitHub { get; set; } = null!;
-    
-    public string? UserTwitter { get; set; } = null!;
-    
-    public string? UserInstagram { get; set; } = null!;
-    
-    public string? UserFacebook { get; set; } = null!;
 
-    public string UserAuth0Id { get; set; } = null!;
+	public DateTime UserBirthday { get; set; }
+
+
+	[Required(ErrorMessage = "Fill in the Date of Birth field")]
+	public bool UserBirthdayVisibility { get; set; }
+
+/*	[Required]
+	[StringLength(100, MinimumLength = 0, ErrorMessage = "Referens GitHub is too long. Maximum length 100 characters")]*/
+	public string? UserGitHub { get; set; } = null!;
+
+	/*[Required]
+	[StringLength(100, MinimumLength = 0, ErrorMessage = "Referens Twitter is too long. Maximum length 100 characters")]*/
+	public string? UserTwitter { get; set; } = null!;
+
+	/*[Required]
+	[StringLength(100, MinimumLength = 0, ErrorMessage = "Referens Instagram is too long. Maximum length 100 characters")]*/
+	public string? UserInstagram { get; set; } = null!;
+
+/*	[Required]
+	[StringLength(100, MinimumLength = 0, ErrorMessage = "Referens Facebook is too long. Maximum length 100 characters")]*/
+	public string? UserFacebook { get; set; } = null!;
+
+	public string UserAuth0Id { get; set; } = null!;
+
 
 }

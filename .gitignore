@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+/RestApiASPNET/DataAccessLibrary/bin/Debug/net6.0
+/RestApiASPNET/DataAccessLibrary/obj/Debug/net6.0
+/RestApiASPNET/RestApiASPNET/bin/Debug/net6.0
+/RestApiASPNET/RestApiASPNET/obj/Debug/net6.0

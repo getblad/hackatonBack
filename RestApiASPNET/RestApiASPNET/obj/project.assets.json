@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "ABCpdf/12.4.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/ABCpdf.NET6.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/ABCpdf.NET6.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/_._": {}
+        }
+      },
       "Auth0.AuthenticationApi/7.17.4": {
         "type": "package",
         "dependencies": {
@@ -1589,6 +1605,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "ABCpdf": "12.4.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.0",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.13",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.1"
@@ -1603,6 +1620,61 @@
     }
   },
   "libraries": {
+    "ABCpdf/12.4.0.1": {
+      "sha512": "XO9diFdfbU/ouIdYlnY0TEZOxwuVkNsS2okdWR2pU6RuWm+re1QNiZkfvsb/I8iPA5WWj7WFxbm21LnUW2XQiQ==",
+      "type": "package",
+      "path": "abcpdf/12.4.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "License.md",
+        "abcpdf.12.4.0.1.nupkg.sha512",
+        "abcpdf.nuspec",
+        "build/3DGlue12-32.dll",
+        "build/3DGlue12-64.dll",
+        "build/ABCChrome86/ABCChrome86.exe",
+        "build/ABCChrome86/LICENSE.txt",
+        "build/ABCChrome86/README.txt",
+        "build/ABCChrome86/cef.pak",
+        "build/ABCChrome86/cef_100_percent.pak",
+        "build/ABCChrome86/cef_200_percent.pak",
+        "build/ABCChrome86/cef_extensions.pak",
+        "build/ABCChrome86/chrome_elf.dll",
+        "build/ABCChrome86/d3dcompiler_47.dll",
+        "build/ABCChrome86/devtools_resources.pak",
+        "build/ABCChrome86/icudtl.dat",
+        "build/ABCChrome86/libEGL.dll",
+        "build/ABCChrome86/libGLESv2.dll",
+        "build/ABCChrome86/libcef.dll",
+        "build/ABCChrome86/libcef.lib",
+        "build/ABCChrome86/locales/en-US.pak",
+        "build/ABCChrome86/snapshot_blob.bin",
+        "build/ABCChrome86/v8_context_snapshot.bin",
+        "build/ABCpdf.targets",
+        "build/ABCpdf12-32.dll",
+        "build/ABCpdf12-64.dll",
+        "build/ChakraCore32.dll",
+        "build/ChakraCore64.dll",
+        "build/PDFSettings.exe",
+        "build/PrintHook32.dll",
+        "build/PrintHook64.dll",
+        "build/TaskGardener.exe",
+        "content/ABCpdfQuickStart.txt",
+        "icon.png",
+        "lib/net40/ABCpdf.dll",
+        "lib/net40/ABCpdf.xml",
+        "lib/net5.0/ABCpdf.NET5.dll",
+        "lib/net5.0/ABCpdf.NET5.xml",
+        "lib/net6.0/ABCpdf.NET6.dll",
+        "lib/net6.0/ABCpdf.NET6.xml",
+        "lib/net7.0/ABCpdf.NET7.dll",
+        "lib/net7.0/ABCpdf.NET7.xml",
+        "lib/netcoreapp3.0/ABCpdfCore.dll",
+        "lib/netcoreapp3.0/ABCpdfCore.xml",
+        "lib/netcoreapp3.1/ABCpdfCore.dll",
+        "lib/netcoreapp3.1/ABCpdfCore.xml"
+      ]
+    },
     "Auth0.AuthenticationApi/7.17.4": {
       "sha512": "D3iGxVBjnBaY8lhA5gEW73hYW80ac4UylT+98rHVpg+IiI1aR98c1irkjXuC3FWXX74LNq+Xsnkdu0/zC2cd3Q==",
       "type": "package",
@@ -4454,19 +4526,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\dimaq\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
+      "projectUniqueName": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
       "projectName": "RestApiASPNET",
-      "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\obj\\",
+      "projectPath": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
+      "packagesPath": "C:\\Users\\dimaq\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\dimaq\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4480,8 +4552,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
-              "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj"
+            "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
+              "projectPath": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj"
             }
           }
         }
