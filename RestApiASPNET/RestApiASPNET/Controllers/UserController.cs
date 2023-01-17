@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Models;
@@ -26,7 +27,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet]
-        // [Authorize]
+        [Authorize]
         public async Task<JsonResult> GetUsers()
         {
             var userDb = await _dbRepositories.GetAll();
@@ -42,11 +43,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var includes = new List<string>() { "Team" };
-                var userDb2 = await _dbRepositories.Where(a => a.UserId != null).GetAll();
-                var userDb = await _dbRepositories.GetOne(userId, includes);
+                var userDb = await _dbRepositories.GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
-                return new JsonResult(Ok(userDb).Value);
+                return new JsonResult(Ok(user).Value);
 
             }
             catch (Exception e)
@@ -66,13 +65,12 @@ namespace RestApiASPNET.Controllers
                 newUser.UpdateTime = DateTime.Now;
                 newUser.RowStatusId = (int)StatusEnums.Active;
                 var user = await _dbRepositories.Create(newUser);
-                return new JsonResult(Ok(user));
+                return new JsonResult(Ok(_mapper.Map<UserDtoAdmin>(user)));
             }
             catch (Exception e)
             {
                 return ResponseHelper.HandleException(e);
             }
-            // return new JsonResult(Ok(newUserDto));
         }
 
         [HttpDelete]
@@ -81,6 +79,17 @@ namespace RestApiASPNET.Controllers
 
             await _dbRepositories.Delete(userId);
             return new JsonResult(Ok("Object was deleted"));
+
+        }
+
+        [HttpGet("getId")]
+        [Authorize]
+        public async Task<JsonResult> GetUserIdByAuth0()
+        {
+            var claim = HttpContext.User.Claims.FirstOrDefault(a => 
+                a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            var id = await _dbRepositories.Where(a => a.UserAuth0Id == claim).GetOne();
+            return new JsonResult(Ok(id.UserId));
 
         }
 
@@ -101,5 +110,22 @@ namespace RestApiASPNET.Controllers
             }
             
         }
+        // public async Task<JsonResult> UpdateTeamUser(UserDtoAdmin userDto)
+        //  {
+        //         try
+        //         {
+        //             var user = _mapper.Map<User>(userDto);
+        //
+        //
+        //             await _dbRepositories.Update(user.UserId, user);
+        //             return new JsonResult(Ok("Update is complete"));
+        //         }
+        //         catch (Exception e)
+        //         {
+        //             return ResponseHelper.HandleException(e);
+        //         }
+        //             
+        // }
+        
     }
 }

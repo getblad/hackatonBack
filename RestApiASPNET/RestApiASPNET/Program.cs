@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using RestApiASPNET.Authentication;
 using RestApiASPNET.Controllers;
 using RestApiASPNET.Helpers;
+using RestApiASPNET.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<EventRepositories, EventRepositories>();
+builder.Services.AddSignalR();
 
 
 builder.Services.AddControllersWithViews()
@@ -91,7 +93,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+// app.UseEndpoints(e =>
+// {
+    // e.MapHub<UserHub>("/user");
+// });
+    
 app.UseAuthentication();
 app.UseAuthorization();
 

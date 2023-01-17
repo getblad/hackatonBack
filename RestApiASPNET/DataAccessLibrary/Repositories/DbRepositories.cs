@@ -3,10 +3,11 @@ using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static System.Console;
 
 namespace DataAccessLibrary.Repositories;
 
-public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class, IStatus
+public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class, IStatus  
 {
     private readonly HpContext _context;
     private  IQueryable<TModel> _query;
@@ -27,29 +28,47 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
             await _context.SaveChangesAsync();
             return model;
         }
-        catch (DbUpdateException exception) when(exception.InnerException is SqlException)
+        catch (DbUpdateException exception) when (exception.InnerException is SqlException)
         {
-            Console.WriteLine();
-            throw new AlreadyExistingException("");
+            switch (exception.InnerException.HResult)
+            {
+                case -2146232060:
+                    throw;
+                case -2146233088:
+                    throw new AlreadyExistingException("");
+            }
+
+            WriteLine();
+            throw;
         }
-        
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
     }
+
 
     public async Task<TModel> Update(int id, TModel model)
     {
-        
-        var local =  await ((DbSet<TModel>)_query).FindAsync(id);
-            
-        // check if local is not null
-        if (local == null)
+        try
         {
-            // detach
-            
-            throw new NotFoundException("No such item");
+            var local =  await ((DbSet<TModel>)_query).FindAsync(id);
+            // check if local is not null
+            if (local == null)
+            {
+                // detach
+                throw new NotFoundException("No such item");
+            }
+            _context.Entry(local).CurrentValues.SetValues(model);
+            await _context.SaveChangesAsync();
+            return local;
         }
-        _context.Entry(local).CurrentValues.SetValues(model);
-        await _context.SaveChangesAsync();
-        return local;
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
 
     }
 
@@ -88,7 +107,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
        
@@ -105,11 +124,29 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
 
 
+    }
+
+    public async Task<TModel> GetOne()
+    {
+        try
+        {
+            var model = await _query.FirstOrDefaultAsync();
+            if (model != null) return model;
+        }
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
+        
+        throw new NotFoundException();
+        
+            
     }
     public  async Task<TModel> GetOne(int id, IEnumerable<string>? includes = null)
     {
@@ -131,7 +168,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            WriteLine(e);
             throw;
         }
 

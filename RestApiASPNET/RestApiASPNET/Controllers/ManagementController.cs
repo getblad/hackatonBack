@@ -1,6 +1,8 @@
-﻿using Auth0.ManagementApi;
+﻿using System.Security.Claims;
+using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -31,11 +33,14 @@ public class ManagementController:ControllerBase
     }
 
     [HttpPost]
-    public async Task<JsonResult> AssignRole(string userId, string roles)
+    [Authorize]
+    public async Task<JsonResult> AssignRole()
     {
         try
         {
-            await _managementApiClient.Users.AssignRolesAsync(userId, new AssignRolesRequest(){Roles = new[] { roles }});
+            var claims = ClaimsPrincipal.Current?.Identity as ClaimsIdentity;
+            var claim = (claims?.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.ToString();
+            await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { "rol_J5HE7jbShSwX1f1p" }});
         }
         catch (Exception e)
         {
