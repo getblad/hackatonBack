@@ -6,9 +6,10 @@ namespace DataAccessLibrary.Repositories;
 public interface IDbRepositories<TModel> where TModel:class, IStatus
 {
 
+    public DbRepositories<TModel> Get(params Expression<Func<TModel, object>>[] includes);
     public Task<TModel> Create(TModel model);
 
-    public Task<TModel> Update(int id, TModel model);
+    public Task<TModel> Update<T>(int id, T model);
 
     public Task<List<TModel>> GetAll();
 
