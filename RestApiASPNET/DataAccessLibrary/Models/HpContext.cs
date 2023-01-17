@@ -214,7 +214,7 @@ public partial class HpContext : DbContext
             entity.ToTable("EventTeamMission");
 
             entity.Property(e => e.EventTeamMissionId)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("EventTeamMission_id");
             entity.Property(e => e.CreateTime)
                 .HasDefaultValueSql("(getdate())")
@@ -345,7 +345,7 @@ public partial class HpContext : DbContext
             entity.ToTable("EventUser_EventTeamMission");
 
             entity.Property(e => e.EventUserId)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("EventUser_id");
             entity.Property(e => e.EventTeamMissionId).HasColumnName("EventTeamMission_id");
 
@@ -380,7 +380,7 @@ public partial class HpContext : DbContext
             entity.HasIndex(e => e.MissionName, "IX_Mission").IsUnique();
 
             entity.Property(e => e.MissionId)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("Mission_id");
             entity.Property(e => e.CreateTime)
                 .HasDefaultValueSql("(getdate())")
