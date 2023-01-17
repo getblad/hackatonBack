@@ -77,9 +77,12 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         return this;
     }
 
-    public DbRepositories<TModel> Get(List<Expression<Func<TModel, object>>> includes)
+    public DbRepositories<TModel> Get( params Expression<Func<TModel, object>>[] includes)
     {
-        includes.ForEach(i => _query = _query.Include(i));
+        foreach (var expression in includes)
+        {
+            _query = _query.Include(expression);
+        }
         return this;
     }
     // public DbRepositories<TModel> GetThenInclude()

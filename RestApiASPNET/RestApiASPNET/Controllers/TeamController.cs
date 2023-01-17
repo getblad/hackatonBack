@@ -25,6 +25,20 @@ namespace RestApiASPNET.Controllers
         }
 
 
+        [HttpGet("getOne")]
+        public async Task<JsonResult> GetTeamByName(string name)
+        {
+                    try
+                    {
+                        var team = _mapper.Map<TeamDtoAdmin>(await _dbRepositories.Where(team => team.TeamName == name)
+                            .GetAll());
+                        return new JsonResult(Ok(team));
+                    }
+                    catch (Exception e)
+                    {
+                        return ResponseHelper.HandleException(e);
+                    }
+        }
         [HttpGet]
         // [Authorize("read:users")]
         public async Task<JsonResult> GetTeams()
@@ -64,7 +78,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             { 
-                 await _dbRepositories.Delete(teamId);
+                await _dbRepositories.Delete(teamId);
                 return new JsonResult(Ok("Team was deleted"));
             }
             catch (Exception e)
