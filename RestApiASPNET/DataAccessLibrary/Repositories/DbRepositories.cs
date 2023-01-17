@@ -33,8 +33,6 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
             switch (exception.InnerException.HResult)
             {
                 case -2146232060:
-                    throw;
-                case -2146233088:
                     throw new AlreadyExistingException("");
             }
 
@@ -49,7 +47,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     }
 
 
-    public async Task<TModel> Update(int id, TModel model)
+    public async Task<TModel> Update<T>(int id, T model)
     {
         try
         {
@@ -60,7 +58,8 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
                 // detach
                 throw new NotFoundException("No such item");
             }
-            _context.Entry(local).CurrentValues.SetValues(model);
+
+            if (model != null) _context.Entry((object)local).CurrentValues.SetValues(model);
             await _context.SaveChangesAsync();
             return local;
         }

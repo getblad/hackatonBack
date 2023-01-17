@@ -99,8 +99,7 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var user = _mapper.Map<User>(userDto);
-
-
+                user.UpdateTime = DateTime.Now;
                 await _dbRepositories.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }
