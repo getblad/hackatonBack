@@ -93,14 +93,31 @@ namespace RestApiASPNET.Controllers
 
         }
 
+        [HttpGet("getTeam")]
+        [Authorize]
+        public async Task<JsonResult> GetTeam()
+        {
+            try
+            {
+                var claim = HttpContext.User.Claims.FirstOrDefault(a =>
+                    a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                var user = await _dbRepositories.Where(a => a.UserAuth0Id == claim).Get(a => a.Team!).GetOne();
+                return new JsonResult(Ok(user.Team?.TeamName));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return ResponseHelper.HandleException(e);
+            }
+        }
+
         [HttpPut]
         public async Task<JsonResult> UpdateUser(UserDtoAdmin userDto)
         {
             try
             {
                 var user = _mapper.Map<User>(userDto);
-
-
+                user.UpdateTime = DateTime.Now;
                 await _dbRepositories.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }

@@ -38,13 +38,30 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            var claims = ClaimsPrincipal.Current?.Identity as ClaimsIdentity;
-            var claim = (claims?.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.ToString();
+            var claim2 = HttpContext.User.Claims;
+            var claim = (claim2?.FirstOrDefault(a => a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.Value.ToString();
             await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { "rol_J5HE7jbShSwX1f1p" }});
         }
         catch (Exception e)
         {
-           return ResponseHelper.HandleException(e);
+            return ResponseHelper.HandleException(e);
+        }
+
+        return null!;
+    }
+    [HttpPost("assignModerator")]
+    [Authorize(Roles = "SystemAdmin")]
+    public async Task<JsonResult> AssignModerator(string userId)
+    
+    {
+        try
+        {
+            await _managementApiClient.Users.AssignRolesAsync(userId,
+                new AssignRolesRequest() { Roles = new[] { "rol_XrQtDPjo2Qg7Cl7g" } });
+        }
+        catch (Exception e)
+        {
+            return ResponseHelper.HandleException(e);
         }
 
         return null!;
