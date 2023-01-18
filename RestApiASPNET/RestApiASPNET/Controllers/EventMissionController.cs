@@ -9,7 +9,7 @@ using RestApiASPNET.Helpers;
 namespace RestApiASPNET.Controllers
 {
     [ApiController]
-    [Route("api/Events/Mission")]
+    [Route("api/Event/Mission")]
     public class EventMissionController : ControllerBase
     {
         private readonly IDbRepositories<EventMission> _dbRepositories;
@@ -28,20 +28,40 @@ namespace RestApiASPNET.Controllers
 
 
         // [Authorize("read:users")]
-        [HttpGet]
+        [HttpGet("{eventId:int}")]
+        
         public async Task<JsonResult> GetEvent(int eventId)
         {
             try
             {
+                var eventMissions = (await _dbRepositories.Get(a => a.Event, b => b.Mission).Where(@event => @event.EventId == eventId).GetAll())
+                    .GroupBy(a => a.EventId).FirstOrDefault();
+                var @event = eventMissions!.Select(a => a.Event).First();
+                var eventsDto = _mapper.Map<EventDtoAdmin>(@event);
+                var missions = eventMissions!.Select(a =>
+                {
+                    var temp = _mapper.Map<MissionDtoAdmin>(a.Mission);
+                    temp.MissionPoint = (a.EventMissionPoint ?? temp.MissionPoint);
+                    temp.MissionLanguage = (a.EventMissionLanguage ?? temp.MissionLanguage);
+                    temp.MissionExecutionTime = a.EventMissionExecutionTime ?? temp.MissionExecutionTime;
+                    temp.MissionStepPointFine = a.EventMissionStepPointFine ?? temp.MissionStepPointFine;
+                    temp.MissionStepTimeFine = a.EventMissionStepTimeFine ?? temp.MissionStepTimeFine;
+                    return temp;
 
-                var @event = await _eventRepositories.GetEvent(eventId);
-                
-                return new JsonResult(_mapper.Map<EventDtoAdmin>(@event));
+                }).ToList();
+                eventsDto.Missions = missions.Where(missionDtoAdmin =>
+                        eventMissions!.Any(c => c.MissionId == missionDtoAdmin.MissionId)).ToList();
+                // var @event = await _eventRepositories.GetEvent(eventId);
+                // var result = @event.FirstOrDefault()!.Select(a => _mapper.Map<EventDtoAdmin>(a));
+                // var @event1 = await _dbRepositories.GetWithEveryPropertyInc().
+                    // Where(a => a.Event.EventId == eventId).GetAll();
+                return new JsonResult(eventsDto);
+                // return new JsonResult(result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return ResponseHelper.HandleException(e);
             }
         }
 

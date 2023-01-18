@@ -1,4 +1,4 @@
-﻿namespace DataAccessLibrary;
+﻿namespace DataAccessLibrary.Enums;
 
 public enum StatusEnums
 {

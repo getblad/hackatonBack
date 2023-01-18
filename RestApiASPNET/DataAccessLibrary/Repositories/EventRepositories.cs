@@ -1,6 +1,9 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
 using DataAccessLibrary.CustomExceptions;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Repositories;
@@ -18,6 +21,9 @@ public class EventRepositories:DbRepositories<Event>
     {
         try
         {
+            eventMission.CreateTime = DateTime.Now; 
+            eventMission.UpdateTime = DateTime.Now; 
+            eventMission.RowStatusId = (int)StatusEnums.Active;
             
             await _context.EventMissions.AddAsync(eventMission);
             await _context.SaveChangesAsync();
@@ -31,10 +37,19 @@ public class EventRepositories:DbRepositories<Event>
         
     }
 
-    public async Task<Event> GetEvent(int eventId)
+    public async Task<IEnumerable<IGrouping<int, Event>>> GetEvent( int eventId)
+    {
+        var @event = await GetWithEveryPropertyInc().
+        Where(a => a.EventId == eventId).GetAll();
+        return @event.GroupBy(a => a.EventId);
+    }
+
+    public async Task<Event> GetEvent1(int eventId)
     {
         try
         {
+            
+            var query = _context.Set<Event>().AsQueryable();
             var @event = await _context.Events.Include(a => a.EventMissions)
                 .ThenInclude(b => b.Mission).Where(events => events.EventId == eventId).FirstOrDefaultAsync();
             return (@event ?? throw new NotFoundException());

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +32,6 @@ namespace RestApiASPNET.Controllers
         public async Task<JsonResult> GetUsers()
         {
             var userDb = await _dbRepositories.GetAll();
-            
             var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
             return new JsonResult(Ok(userAdmins).Value);
         }

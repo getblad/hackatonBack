@@ -31,13 +31,35 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
     }
+    [HttpDelete("deleteRoles/{userId}")]
+    public async Task<JsonResult> DeleteUserRolesByUserId(string userId)
+    {
+        var rolesToDelete = await _managementApiClient.Users.GetRolesAsync(
+            userId, new PaginationInfo()
+        );
 
-    [HttpPost]
+        var rolesIdToDeleteStr = rolesToDelete.Select(x => x.Id).ToArray();
+
+        try
+        {
+            await _managementApiClient.Users.RemoveRolesAsync(
+                userId, new AssignRolesRequest() { Roles = rolesIdToDeleteStr }
+            );
+            return new JsonResult(NoContent());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return ResponseHelper.HandleException( true);
+        }
+    }
+    [HttpPost("autoAssign")]
     [Authorize]
     public async Task<JsonResult> AssignRole()
     {
         try
         {
+            
             var claim2 = HttpContext.User.Claims;
             var claim = (claim2?.FirstOrDefault(a => a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.Value.ToString();
             await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { "rol_J5HE7jbShSwX1f1p" }});
@@ -64,6 +86,6 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
 
-        return null!;
+        return new JsonResult(NoContent());
     }
 }

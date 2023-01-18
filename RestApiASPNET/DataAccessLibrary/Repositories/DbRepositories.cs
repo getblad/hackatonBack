@@ -1,8 +1,13 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
+using System.Reflection;
+using AutoMapper.Internal;
 using DataAccessLibrary.CustomExceptions;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using static System.Console;
 
 namespace DataAccessLibrary.Repositories;
@@ -147,9 +152,85 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         
         throw new NotFoundException();
-        
-            
+
     }
+
+    public DbRepositories<TModel> GetWithEveryPropertyInc()
+    { 
+        var properties = typeof(TModel).GetProperties();
+        foreach (var property in properties)
+        {
+            var propertyType = property.PropertyType;
+            if (propertyType is not { IsClass: true, IsAbstract: false } || propertyType == typeof(string)) continue;
+            _query = _query.Include(property.Name);
+        }
+        return this;
+    }
+
+    public DbRepositories<TModel> GetWithEveryProperty()
+    {
+        var properties = typeof(TModel).GetProperties();
+        foreach (var property in properties)
+        {
+            var propertyType = property.PropertyType;
+            if (propertyType is not { IsClass: true, IsAbstract: false } || propertyType == typeof(string)) continue;
+            _query = _query.Include(property.Name);
+            var nestedProperties = propertyType.GetProperties();
+            foreach (var nestedProperty in nestedProperties)
+            {
+                if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } &&
+                    nestedProperty.PropertyType != typeof(string))
+                {
+                    _query = _query.Include($"{property.Name}.{nestedProperty.Name}");
+                }
+            }
+        }
+        return this;
+    }  
+        // {
+        //         var navigationProperties = typeof(TModel)
+        //             .GetProperties()
+        //             .Where(x => x.PropertyType.IsClass && x.PropertyType != typeof(string)  || x.PropertyType.IsCollection());
+        //         foreach (var navigationProperty in navigationProperties)
+        //         {
+        //             _query = _query.Include(navigationProperty.Name);
+        //             // var includeQuery = _query.Include(navigationProperty.Name) as IIncludableQueryable<TModel, object >;
+        //             var isManyToMany = navigationProperty.PropertyType.GetProperties()
+        //                 ;
+        //             foreach (var nestedProperty in isManyToMany)
+        //             {
+        //                 if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } &&
+        //                     nestedProperty.PropertyType != typeof(string))
+        //                 {
+        //                     _query = _query.Include($"{navigationProperty.Name}.{nestedProperty.Name}");
+        //                 }
+        //             }
+        //             // _query = _query.Include(navigationProperty.Name);
+        //         }
+        //
+        //         return this;
+        // }
+    // {
+    //     var properties = typeof(TModel).GetProperties()
+    //                  .Where(x => x.PropertyType.IsClass && x.PropertyType != typeof(string)  || x.PropertyType.IsCollection());
+    //     
+    //     foreach (var property in properties)
+    //     {
+    //         var propertyType = property.PropertyType;
+    //             _query = _query.Include(property.Name);
+    //             var nestedProperties = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0].GetProperties() : propertyType.GetProperties();
+    //
+    //             foreach (var nestedProperty in nestedProperties)
+    //             {
+    //                 if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } && nestedProperty.PropertyType != typeof(string) || propertyType.IsNested)
+    //                 {
+    //                     _query = _query.Include($"{property.Name}.{nestedProperty.Name}");
+    //                 }
+    //             }
+    //         
+    //     }
+    //     return this;
+    // }
     public  async Task<TModel> GetOne(int id, IEnumerable<string>? includes = null)
     {
         try

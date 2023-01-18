@@ -1,5 +1,6 @@
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;

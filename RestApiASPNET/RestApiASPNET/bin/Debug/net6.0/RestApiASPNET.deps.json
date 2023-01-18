@@ -20,6 +20,14 @@
           "RestApiASPNET.dll": {}
         }
       },
+      "ABCpdf/12.4.0.1": {
+        "runtime": {
+          "lib/net6.0/ABCpdf.NET6.dll": {
+            "assemblyVersion": "12.4.0.1",
+            "fileVersion": "12.4.0.1"
+          }
+        }
+      },
       "Auth0.AuthenticationApi/7.17.4": {
         "dependencies": {
           "Auth0.Core": "7.17.4",
@@ -994,6 +1002,7 @@
       },
       "DataAccessLibrary/1.0.0": {
         "dependencies": {
+          "ABCpdf": "12.4.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.0",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.13",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.1"
@@ -1009,6 +1018,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "ABCpdf/12.4.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XO9diFdfbU/ouIdYlnY0TEZOxwuVkNsS2okdWR2pU6RuWm+re1QNiZkfvsb/I8iPA5WWj7WFxbm21LnUW2XQiQ==",
+      "path": "abcpdf/12.4.0.1",
+      "hashPath": "abcpdf.12.4.0.1.nupkg.sha512"
     },
     "Auth0.AuthenticationApi/7.17.4": {
       "type": "package",

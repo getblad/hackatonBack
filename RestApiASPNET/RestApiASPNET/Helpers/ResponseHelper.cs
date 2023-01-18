@@ -18,5 +18,14 @@ public static class ResponseHelper
                 return new JsonResult("Error"){StatusCode = StatusCodes.Status400BadRequest};
         }
     }
-    
+
+    public static JsonResult HandleException(bool serverError, Exception? ex = null)
+    {
+        
+        if (serverError)
+        {
+            return new JsonResult("Server Error") { StatusCode = StatusCodes.Status500InternalServerError };
+        }
+        return new JsonResult("") { StatusCode = StatusCodes.Status400BadRequest };
+    }
 }
