@@ -31,8 +31,14 @@ namespace RestApiASPNET.Controllers
         [Authorize]
         public async Task<JsonResult> GetUsers()
         {
-            var userDb = await _dbRepositories.GetAll();
-            var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
+            var userDb = await _dbRepositories.Get(a => a.Team!).GetAll();
+            var userAdmins = userDb.Select(user =>
+            {
+                var a = _mapper.Map<UserDtoAdmin>(user);
+                a.TeamName = user.Team?.TeamName;
+                return a;
+            }).ToList();
+            
             return new JsonResult(Ok(userAdmins).Value);
         }
 
@@ -43,8 +49,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var userDb = await _dbRepositories.GetOne(userId);
+                var userDb = await _dbRepositories.Get(a => a.Team!).GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
+                user.TeamName = userDb.Team?.TeamName;
                 return new JsonResult(Ok(user).Value);
 
             }
