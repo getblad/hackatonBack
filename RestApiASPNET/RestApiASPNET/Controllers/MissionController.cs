@@ -1,10 +1,12 @@
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
+using MissionType = DataAccessLibrary.Enums.MissionType;
 
 namespace RestApiASPNET.Controllers
 {
@@ -24,6 +26,21 @@ namespace RestApiASPNET.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("mains")]
+        public async Task<JsonResult> GetMainMissions()
+        {
+            try
+            {
+                var dbMissions = await _dbRepositories.Where(a => a.MissionTypeId == (int)MissionType.Main).GetAll();
+                var missionsAdmin = dbMissions.Select(mission => _mapper.Map<MissionDtoAdmin>(mission)).ToList();
+                return new JsonResult(Ok(missionsAdmin).Value);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return ResponseHelper.HandleException(e);
+            }
+        }
 
         [HttpGet]
         // [Authorize("read:users")]

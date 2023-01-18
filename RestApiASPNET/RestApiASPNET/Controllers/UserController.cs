@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -30,9 +31,14 @@ namespace RestApiASPNET.Controllers
         [Authorize]
         public async Task<JsonResult> GetUsers()
         {
-            var userDb = await _dbRepositories.GetAll();
+            var userDb = await _dbRepositories.Get(a => a.Team!).GetAll();
+            var userAdmins = userDb.Select(user =>
+            {
+                var a = _mapper.Map<UserDtoAdmin>(user);
+                a.TeamName = user.Team?.TeamName;
+                return a;
+            }).ToList();
             
-            var userAdmins = userDb.Select(user => _mapper.Map<UserDtoAdmin>(user)).ToList();
             return new JsonResult(Ok(userAdmins).Value);
         }
 
@@ -43,8 +49,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var userDb = await _dbRepositories.GetOne(userId);
+                var userDb = await _dbRepositories.Get(a => a.Team!).GetOne(userId);
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
+                user.TeamName = userDb.Team?.TeamName;
                 return new JsonResult(Ok(user).Value);
 
             }

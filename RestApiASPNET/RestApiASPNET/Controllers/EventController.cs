@@ -1,5 +1,6 @@
 using AutoMapper;
 using DataAccessLibrary;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -31,9 +32,12 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var dbEvents = await _dbRepositories.GetAll();
+                var dbEvents = await _dbRepositories.GetWithEveryProperty().GetAll();
+                // var dbEvents = await _dbRepositories.Get(a => a.EventMissions)
+                //     .Get(b => b.EventMissions).GetAll();
                 var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
-                return new JsonResult(Ok(eventDtoAdmins).Value);
+                // return new JsonResult(Ok(eventDtoAdmins).Value);
+                return new JsonResult(dbEvents);
             }
             catch (Exception e)
             {
@@ -41,7 +45,7 @@ namespace RestApiASPNET.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addEvent")]
         public async Task<JsonResult> PostEvent(EventDtoAdmin newEventDtoAdmin)
         {
             try
@@ -49,8 +53,8 @@ namespace RestApiASPNET.Controllers
                 var newEvent = _mapper.Map<Event>(newEventDtoAdmin);
                 newEvent.CreateTime = DateTime.Now;
                 newEvent.UpdateTime = DateTime.Now;
+                newEvent.EventStatusId = (int)StatusEvent.Created;
                 newEvent.RowStatusId = (int)StatusEnums.Active;
-                newEvent.EventStatusId = 1;
                 await _dbRepositories.Create(newEvent);
                 return new JsonResult(Ok("Event is added"));
             }

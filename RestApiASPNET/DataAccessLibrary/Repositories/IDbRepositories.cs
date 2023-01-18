@@ -6,6 +6,8 @@ namespace DataAccessLibrary.Repositories;
 public interface IDbRepositories<TModel> where TModel:class, IStatus
 {
 
+    public DbRepositories<TModel> GetWithEveryPropertyInc();
+    public DbRepositories<TModel> GetWithEveryProperty();
     public DbRepositories<TModel> Get(params Expression<Func<TModel, object>>[] includes);
     public Task<TModel> Create(TModel model);
 
