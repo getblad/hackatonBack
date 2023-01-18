@@ -73,7 +73,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("read:users", policy => policy.Requirements.Add(new HasScopeRequirement("read:users", domain)));
 });
 
-builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+// builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<EventRepositories, EventRepositories>();
 builder.Services.AddSignalR();
 

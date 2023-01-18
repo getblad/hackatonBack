@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{00925EB8-74BB-4993-BC3D-7388F0EF08B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "front", "..\..\hackathon-front\front.csproj", "{126E2801-E7FA-4602-B3AB-E6E0BBCDDB5A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00925EB8-74BB-4993-BC3D-7388F0EF08B2} = {00925EB8-74BB-4993-BC3D-7388F0EF08B2}
+		{DBFEE1BA-A3D1-4479-9068-343EED8BF086} = {DBFEE1BA-A3D1-4479-9068-343EED8BF086}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

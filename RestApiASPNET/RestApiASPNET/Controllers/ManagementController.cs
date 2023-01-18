@@ -34,14 +34,12 @@ public class ManagementController:ControllerBase
     [HttpDelete("deleteRoles/{userId}")]
     public async Task<JsonResult> DeleteUserRolesByUserId(string userId)
     {
-        var rolesToDelete = await _managementApiClient.Users.GetRolesAsync(
-            userId, new PaginationInfo()
-        );
-
-        var rolesIdToDeleteStr = rolesToDelete.Select(x => x.Id).ToArray();
-
         try
         {
+            var rolesToDelete = await _managementApiClient.Users.GetRolesAsync(
+                userId, new PaginationInfo()
+            );
+            var rolesIdToDeleteStr = rolesToDelete.Select(x => x.Id).ToArray();
             await _managementApiClient.Users.RemoveRolesAsync(
                 userId, new AssignRolesRequest() { Roles = rolesIdToDeleteStr }
             );
@@ -59,7 +57,6 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            
             var claim2 = HttpContext.User.Claims;
             var claim = (claim2?.FirstOrDefault(a => a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.Value.ToString();
             await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { "rol_J5HE7jbShSwX1f1p" }});

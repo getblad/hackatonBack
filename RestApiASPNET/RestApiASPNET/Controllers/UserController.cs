@@ -7,6 +7,7 @@ using DataAccessLibrary.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers
@@ -31,15 +32,22 @@ namespace RestApiASPNET.Controllers
         [Authorize]
         public async Task<JsonResult> GetUsers()
         {
-            var userDb = await _dbRepositories.Get(a => a.Team!).GetAll();
-            var userAdmins = userDb.Select(user =>
+            try
             {
-                var a = _mapper.Map<UserDtoAdmin>(user);
-                a.TeamName = user.Team?.TeamName;
-                return a;
-            }).ToList();
-            
-            return new JsonResult(Ok(userAdmins).Value);
+                var userDb = await _dbRepositories.Get(a => a.Team!).GetAll();
+                var userAdmins = userDb.Select(user =>
+                {
+                    var a = _mapper.Map<UserDtoAdmin>(user);
+                    a.TeamName = user.Team?.TeamName;
+                    return a;
+                }).ToList();
+                return new JsonResult(Ok(userAdmins).Value);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return ResponseHelper.HandleException(e);
+            }
         }
 
         [HttpGet("{userId:int}")]
@@ -84,20 +92,34 @@ namespace RestApiASPNET.Controllers
         public async Task<JsonResult> DeleteUser(int userId)
         {
 
-            await _dbRepositories.Delete(userId);
-            return new JsonResult(Ok("Object was deleted"));
-
+            try
+            {
+                await _dbRepositories.Delete(userId);
+                return new JsonResult(Ok("Object was deleted"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return ResponseHelper.HandleException(e);
+            }
         }
 
         [HttpGet("getId")]
         [Authorize]
         public async Task<JsonResult> GetUserIdByAuth0()
         {
-            var claim = HttpContext.User.Claims.FirstOrDefault(a => 
-                a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-            var id = await _dbRepositories.Where(a => a.UserAuth0Id == claim).GetOne();
-            return new JsonResult(Ok(id.UserId));
-
+            try
+            {
+                var claim = HttpContext.User.Claims.FirstOrDefault(a => 
+                    a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                var id = await _dbRepositories.Where(a => a.UserAuth0Id == claim).GetOne();
+                return new JsonResult(Ok(id.UserId));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return ResponseHelper.HandleException(e);
+            }
         }
 
         [HttpGet("getTeam")]
