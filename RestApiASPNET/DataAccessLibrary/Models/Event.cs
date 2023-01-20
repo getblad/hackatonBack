@@ -40,7 +40,7 @@ public partial class Event:IStatus
 
     public virtual EventStatus EventStatus { get; set; } = null!;
 
-    public virtual ICollection<EventMission> EventMissions { get; } = new List<EventMission>();
+    public virtual ICollection<EventMission> EventMissions { get; set; } = new List<EventMission>();
 
     public virtual ICollection<EventTeam> EventTeams { get; } = new List<EventTeam>();
 

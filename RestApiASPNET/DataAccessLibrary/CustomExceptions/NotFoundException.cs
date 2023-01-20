@@ -1,15 +1,19 @@
 ﻿namespace DataAccessLibrary.CustomExceptions;
 
-public class NotFoundException:System.Exception
+public class NotFoundException:Exception
 {
-   public string ObjectName;
+    public string? MyMessage;
 
     public NotFoundException()
     {
     }
 
+    public NotFoundException(int objectId)
+    {
+    }
     public NotFoundException(string? message) : base(message)
     {
+        MyMessage = message;
     }
 
     public NotFoundException(string? message, System.Exception? innerException) : base(message, innerException)
@@ -18,6 +22,6 @@ public class NotFoundException:System.Exception
 
     public NotFoundException(string? message, string objectName):this(message)
     {
-        ObjectName = objectName;
+        // this.objectName = objectName;
     }
 }

@@ -7,12 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Services\**" />
-      <EmbeddedResource Remove="Services\**" />
-      <None Remove="Services\**" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="ABCpdf" Version="12.4.0.1" />
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.13" />
@@ -21,6 +15,10 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+<!--      <Compile Include="Services\UserHelper.cs" />-->
     </ItemGroup>
 
 </Project>

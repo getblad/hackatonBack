@@ -4,6 +4,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,15 @@ namespace RestApiASPNET.Controllers
         private readonly ILogger<UsersController> _logger;
         private readonly IMapper _mapper;
         private readonly IDbRepositories<User> _dbRepositories;
+        private readonly UserHelper _userHelper;
 
-        public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbRepositories<User> dbRepositories
-            )
+        public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbRepositories<User> dbRepositories,
+           UserHelper userHelper )
         {
             _logger = logger;
             _mapper = mapper;
             _dbRepositories = dbRepositories;
+            _userHelper = userHelper;
         }
 
         [HttpGet]
@@ -57,7 +60,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var userDb = await _dbRepositories.Get(a => a.Team!).GetOne(userId);
+                var userDb = await _dbRepositories.Get(a => a.Team!).Where(b => b.UserId == userId).GetOne();
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
                 user.TeamName = userDb.Team?.TeamName;
                 return new JsonResult(Ok(user).Value);
@@ -94,7 +97,7 @@ namespace RestApiASPNET.Controllers
 
             try
             {
-                await _dbRepositories.Delete(userId);
+                await _dbRepositories.Delete(userId, await _userHelper.GetId() );
                 return new JsonResult(Ok("Object was deleted"));
             }
             catch (Exception e)
@@ -110,10 +113,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var claim = HttpContext.User.Claims.FirstOrDefault(a => 
-                    a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-                var id = await _dbRepositories.Where(a => a.UserAuth0Id == claim).GetOne();
-                return new JsonResult(Ok(id.UserId));
+                return new JsonResult(await _userHelper.GetId());
             }
             catch (Exception e)
             {
@@ -128,9 +128,8 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var claim = HttpContext.User.Claims.FirstOrDefault(a =>
-                    a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-                var user = await _dbRepositories.Where(a => a.UserAuth0Id == claim).Get(a => a.Team!).GetOne();
+                var authId = _userHelper.GetAuthId();
+                var user = await _dbRepositories.Where(a => a.UserAuth0Id == authId).Get(a => a.Team!).GetOne();
                 return new JsonResult(Ok(user.Team?.TeamName));
             }
             catch (Exception e)
