@@ -3,6 +3,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
@@ -17,13 +18,15 @@ namespace RestApiASPNET.Controllers
         private readonly IDbRepositories<Mission> _dbRepositories;
         private readonly ILogger<MissionController> _logger;
         private readonly IMapper _mapper;
+        private readonly UserHelper _userHelper;
 
 
-        public MissionController(IDbRepositories<Mission> dbRepositories, ILogger<MissionController> logger, IMapper mapper)
+        public MissionController(IDbRepositories<Mission> dbRepositories, ILogger<MissionController> logger, IMapper mapper, UserHelper userHelper )
         {
             _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
+            _userHelper = userHelper;
         }
 
         [HttpGet("mains")]
@@ -68,7 +71,7 @@ namespace RestApiASPNET.Controllers
                 nemMission.UpdateTime = DateTime.Now;
                 nemMission.RowStatusId = (int)StatusEnums.Active;
                 await _dbRepositories.Create(nemMission);
-                return new JsonResult(Ok("Team is added"));
+                return new JsonResult(Ok("Mission is added"));
             }
             catch(Exception e)
             {
@@ -81,8 +84,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             { 
-                 await _dbRepositories.Delete(missionId);
-                return new JsonResult(Ok("Team was deleted"));
+                await _dbRepositories.Delete(missionId, await _userHelper.GetId());
+                
+                return new JsonResult(Ok("Mission was deleted"));
             }
             catch (Exception e)
             {
@@ -92,7 +96,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPut]
-        public async Task<JsonResult> UpdateTeam(MissionDtoAdmin newMissionDto)
+        public async Task<JsonResult> UpdateMission(MissionDtoAdmin newMissionDto)
         {
             try
             {

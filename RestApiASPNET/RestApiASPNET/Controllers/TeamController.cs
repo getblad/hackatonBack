@@ -3,6 +3,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
@@ -16,29 +17,31 @@ namespace RestApiASPNET.Controllers
         private readonly IDbRepositories<Team> _dbRepositories;
         private readonly ILogger<TeamController> _logger;
         private readonly IMapper _mapper;
+        private readonly UserHelper _userHelper;
 
 
-        public TeamController(IDbRepositories<Team> dbRepositories, ILogger<TeamController> logger, IMapper mapper)
+        public TeamController(IDbRepositories<Team> dbRepositories, ILogger<TeamController> logger, IMapper mapper, UserHelper userHelper)
         {
             _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
+            _userHelper = userHelper;
         }
 
 
         [HttpGet("getOne")]
         public async Task<JsonResult> GetTeamByName(string name)
         {
-                    try
-                    {
-                        var team = _mapper.Map<TeamDtoAdmin>(await _dbRepositories.Where(team => team.TeamName == name)
-                            .GetAll());
-                        return new JsonResult(Ok(team));
-                    }
-                    catch (Exception e)
-                    {
-                        return ResponseHelper.HandleException(e);
-                    }
+            try
+            {
+                var team = _mapper.Map<TeamDtoAdmin>(await _dbRepositories.Where(team => team.TeamName == name)
+                    .GetAll());
+                return new JsonResult(Ok(team));
+            }
+            catch (Exception e)
+            {
+                return ResponseHelper.HandleException(e);
+            }
         }
         [HttpGet]
         // [Authorize("read:users")]
@@ -79,7 +82,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             { 
-                await _dbRepositories.Delete(teamId);
+                await _dbRepositories.Delete(teamId, await _userHelper.GetId());
                 return new JsonResult(Ok("Team was deleted"));
             }
             catch (Exception e)

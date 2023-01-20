@@ -1,9 +1,7 @@
 using AutoMapper;
-using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -13,18 +11,27 @@ namespace RestApiASPNET.Controllers
     [Route("api/Events/")]
     public class EventController : ControllerBase
     {
-        private readonly IDbRepositories<Event> _dbRepositories;
         private readonly ILogger<EventController> _logger;
         private readonly IMapper _mapper;
+        private readonly EventRepositories _eventRepositories;
 
 
-        public EventController(IDbRepositories<Event> dbRepositories, ILogger<EventController> logger, IMapper mapper)
+        public EventController( ILogger<EventController> logger, IMapper mapper,
+            EventRepositories eventRepositories)
         {
-            _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
+            _eventRepositories = eventRepositories;
         }
 
+        [HttpGet("Missions/{eventId:int}")]
+        
+        public async Task<JsonResult> GetEvent(int eventId)
+        {
+            var @event = await _eventRepositories.GetEventMissions(eventId);
+            var eventDtoAdmin = _mapper.Map<EventDtoAdmin>(@event);
+            return new JsonResult(Ok(eventDtoAdmin));
+        }
 
         [HttpGet]
         // [Authorize("read:users")]
@@ -32,12 +39,9 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var dbEvents = await _dbRepositories.GetWithEveryProperty().GetAll();
-                // var dbEvents = await _dbRepositories.Get(a => a.EventMissions)
-                //     .Get(b => b.EventMissions).GetAll();
+                var dbEvents = await _eventRepositories.GetAll();
                 var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
-                // return new JsonResult(Ok(eventDtoAdmins).Value);
-                return new JsonResult(dbEvents);
+                return new JsonResult(Ok(eventDtoAdmins));
             }
             catch (Exception e)
             {
@@ -55,7 +59,7 @@ namespace RestApiASPNET.Controllers
                 newEvent.UpdateTime = DateTime.Now;
                 newEvent.EventStatusId = (int)StatusEvent.Created;
                 newEvent.RowStatusId = (int)StatusEnums.Active;
-                await _dbRepositories.Create(newEvent);
+                await _eventRepositories.Create(newEvent);
                 return new JsonResult(Ok("Event is added"));
             }
             catch(Exception e)

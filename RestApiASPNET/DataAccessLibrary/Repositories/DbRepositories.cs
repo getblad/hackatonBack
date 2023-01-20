@@ -5,6 +5,7 @@ using AutoMapper.Internal;
 using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -17,14 +18,12 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     private readonly HpContext _context;
     private  IQueryable<TModel> _query;
 
-    public DbRepositories(HpContext context)
+    public DbRepositories(HpContext context, IQueryable<TModel>? query = null)
     {
         _context = context;
-        _query = _context.Set<TModel>();
+        _query = query ?? _context.Set<TModel>();
 
     }
-
-
     public async Task<TModel> Create(TModel model)
     {
         try
@@ -76,13 +75,18 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
 
     }
 
-    public DbRepositories<TModel> Get(List<string> includes)
+    public IDbRepositories<TModel> Get( params string[]? includes)
     {
-        includes.ForEach(i => _query = _query.Include(i));
+        // includes.ForEach(i => _query = _query.Include(i));
+        if (includes != null)
+        {
+            _query = includes.Aggregate(_query,
+                (current, include) => current.Include(include));
+        }
         return this;
     }
 
-    public DbRepositories<TModel> Get( params Expression<Func<TModel, object>>[] includes)
+    public IDbRepositories<TModel> Get( params Expression<Func<TModel, object>>[] includes)
     {
         foreach (var expression in includes)
         {
@@ -95,13 +99,13 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     //     
     // }
 
-    public DbRepositories<TModel> Where(Expression<Func<TModel,bool>> predicate)
+    public IDbRepositories<TModel> Where(Expression<Func<TModel,bool>> predicate)
     {
        _query = _query.Where(predicate);
        return this;
     }
 
-    public DbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
+    public IDbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
     {
         predicates.ForEach(predicate => _query = _query.Where(predicate));
         return this;
@@ -121,12 +125,17 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     }
     // public DbRepositories<TModel> GetAllThenInclude()
 
-    public async Task Delete(int id)
+    public async Task Delete(int id, int userId)
     {
         try
         {
             var entry = await _context.Set<TModel>().FindAsync(id);
-            if (entry != null) entry.RowStatusId = (int)StatusEnums.Delete;
+
+            if (entry != null)
+            {
+                entry.RowStatusId = (int)StatusEnums.Delete;
+                entry.UpdateUserId = userId;
+            }
             await _context.SaveChangesAsync();
         }
         catch (Exception e)
@@ -138,24 +147,20 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
 
     }
 
-    public async Task<TModel> GetOne()
+    public IDbRepositories<T> Selector<T>(Expression<Func<TModel, T>> selector) where T:class, IStatus
     {
         try
         {
-            var model = await _query.FirstOrDefaultAsync();
-            if (model != null) return model;
+            var query = _query.Select(selector);
+            return new DbRepositories<T>(_context, query );
         }
         catch (Exception e)
         {
             WriteLine(e);
             throw;
         }
-        
-        throw new NotFoundException();
-
     }
-
-    public DbRepositories<TModel> GetWithEveryPropertyInc()
+    public IDbRepositories<TModel> GetWithEveryPropertyOnce()
     { 
         var properties = typeof(TModel).GetProperties();
         foreach (var property in properties)
@@ -167,7 +172,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         return this;
     }
 
-    public DbRepositories<TModel> GetWithEveryProperty()
+    public IDbRepositories<TModel> GetWithEveryProperty()
     {
         var properties = typeof(TModel).GetProperties();
         foreach (var property in properties)
@@ -231,6 +236,24 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     //     }
     //     return this;
     // }
+    
+    public async Task<TModel> GetOne()
+    {
+        try
+        {
+            var model = await _query.FirstOrDefaultAsync();
+            if (model != null) return model;
+        }
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
+        
+        throw new NotFoundException();
+
+    }
+
     public  async Task<TModel> GetOne(int id, IEnumerable<string>? includes = null)
     {
         try
