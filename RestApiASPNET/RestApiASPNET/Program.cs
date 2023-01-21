@@ -69,9 +69,9 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-// builder.Services.AddScoped<EventRepositories, EventRepositories>();
+builder.Services.AddScoped<EventRepositories, EventRepositories>();
 builder.Services.AddScoped<UserHelper, UserHelper>();
-// builder.Services.AddScoped<EventMissionsRepositories, EventMissionsRepositories>();
+builder.Services.AddScoped<EventMissionsRepositories, EventMissionsRepositories>();
 builder.Services.AddSignalR();
 
 

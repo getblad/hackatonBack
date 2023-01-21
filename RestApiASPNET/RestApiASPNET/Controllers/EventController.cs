@@ -26,11 +26,11 @@ namespace RestApiASPNET.Controllers
 
         [HttpGet("Missions/{eventId:int}")]
         
-        public async Task<JsonResult> GetEvent(int eventId)
+        public async Task<JsonResult> GetEvent(int eventId, int twitterBonus)
         {
             var @event = await _eventRepositories.GetEventMissions(eventId);
             var eventDtoAdmin = _mapper.Map<EventDtoAdmin>(@event);
-            return new JsonResult(Ok(eventDtoAdmin));
+            return new JsonResult(Ok( eventDtoAdmin));
         }
 
         [HttpGet]

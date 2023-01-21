@@ -63,7 +63,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
                 throw new NotFoundException("No such item");
             }
 
-            if (model != null) _context.Entry((object)local).CurrentValues.SetValues(model);
+            if (model != null) _context.Entry(local).CurrentValues.SetValues(model);
             await _context.SaveChangesAsync();
             return local;
         }
