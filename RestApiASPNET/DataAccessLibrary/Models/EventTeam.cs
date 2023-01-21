@@ -1,6 +1,10 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using DataAccessLibrary.Repositories;
 
-public partial class EventTeam
+namespace DataAccessLibrary.Models;
+
+public partial class EventTeam : IStatus
 {
     public int EventTeamId { get; set; }
 
@@ -33,4 +37,11 @@ public partial class EventTeam
     public virtual Team Team { get; set; } = null!;
 
     public virtual User UpdateUser { get; set; } = null!;
+    
+    [Column("EventTeam_twitterPoint")]
+    [DefaultValue(false)]
+    public bool TeamTwitterPoint { get; set; } 
+    [Column("EventTeam_point")]
+    [DefaultValue(0)]
+    public int EventTeamPoint { get; set; }
 }

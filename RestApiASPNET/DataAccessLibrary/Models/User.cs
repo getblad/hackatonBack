@@ -182,6 +182,8 @@ public class UserDtoAdmin
 	public string? UserFacebook { get; set; } = null!;
 
 	public string UserAuth0Id { get; set; } = null!;
+	
+	public string? TeamName { get; set; }
 
 
 }

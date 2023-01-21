@@ -40,7 +40,7 @@ public partial class Event:IStatus
 
     public virtual EventStatus EventStatus { get; set; } = null!;
 
-    public virtual ICollection<EventMission> EventMissions { get; } = new List<EventMission>();
+    public virtual ICollection<EventMission> EventMissions { get; set; } = new List<EventMission>();
 
     public virtual ICollection<EventTeam> EventTeams { get; } = new List<EventTeam>();
 
@@ -78,5 +78,5 @@ public class EventDtoAdmin
 
     public DateTime UpdateTime { get; set; }
 
-    public  ICollection<MissionDtoAdmin>? Missions { get; } = new List<MissionDtoAdmin>();
+    public  ICollection<MissionDtoAdmin>? Missions { get; set; } = new List<MissionDtoAdmin>();
 }

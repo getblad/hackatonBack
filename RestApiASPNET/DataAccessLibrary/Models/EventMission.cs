@@ -68,6 +68,4 @@ public class EventMissionDto
 
     public DateTime UpdateTime { get; set; }
 
-    public int RowStatusId { get; set; }
-
 }

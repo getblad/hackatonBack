@@ -1,21 +1,16 @@
-using System.Security.Claims;
 using DataAccessLibrary.Configurations;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestApiASPNET.Authentication;
-using RestApiASPNET.Controllers;
-using RestApiASPNET.Helpers;
-using RestApiASPNET.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-string domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 builder.Services.AddScoped(typeof(IDbRepositories<>), typeof(DbRepositories<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,7 +38,7 @@ builder.Services.AddSwaggerGen(opt => {
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
@@ -72,9 +67,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("read:user", policy => policy.Requirements.Add(new HasScopeRequirement("read:user", domain)));
     options.AddPolicy("read:users", policy => policy.Requirements.Add(new HasScopeRequirement("read:users", domain)));
 });
-
-builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+// builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<EventRepositories, EventRepositories>();
+builder.Services.AddScoped<UserHelper, UserHelper>();
+builder.Services.AddScoped<EventMissionsRepositories, EventMissionsRepositories>();
 builder.Services.AddSignalR();
 
 

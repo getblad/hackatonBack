@@ -31,8 +31,27 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
     }
-
-    [HttpPost]
+    [HttpDelete("deleteRoles/{userId}")]
+    public async Task<JsonResult> DeleteUserRolesByUserId(string userId)
+    {
+        try
+        {
+            var rolesToDelete = await _managementApiClient.Users.GetRolesAsync(
+                userId, new PaginationInfo()
+            );
+            var rolesIdToDeleteStr = rolesToDelete.Select(x => x.Id).ToArray();
+            await _managementApiClient.Users.RemoveRolesAsync(
+                userId, new AssignRolesRequest() { Roles = rolesIdToDeleteStr }
+            );
+            return new JsonResult(NoContent());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return ResponseHelper.HandleException( true);
+        }
+    }
+    [HttpPost("autoAssign")]
     [Authorize]
     public async Task<JsonResult> AssignRole()
     {
@@ -64,6 +83,6 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
 
-        return null!;
+        return new JsonResult(NoContent());
     }
 }

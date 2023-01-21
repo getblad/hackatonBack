@@ -1,8 +1,14 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
+using System.Reflection;
+using AutoMapper.Internal;
 using DataAccessLibrary.CustomExceptions;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using static System.Console;
 
 namespace DataAccessLibrary.Repositories;
@@ -12,14 +18,12 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     private readonly HpContext _context;
     private  IQueryable<TModel> _query;
 
-    public DbRepositories(HpContext context)
+    public DbRepositories(HpContext context, IQueryable<TModel>? query = null)
     {
         _context = context;
-        _query = _context.Set<TModel>();
+        _query = query ?? _context.Set<TModel>();
 
     }
-
-
     public async Task<TModel> Create(TModel model)
     {
         try
@@ -59,7 +63,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
                 throw new NotFoundException("No such item");
             }
 
-            if (model != null) _context.Entry((object)local).CurrentValues.SetValues(model);
+            if (model != null) _context.Entry(local).CurrentValues.SetValues(model);
             await _context.SaveChangesAsync();
             return local;
         }
@@ -71,13 +75,18 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
 
     }
 
-    public DbRepositories<TModel> Get(List<string> includes)
+    public IDbRepositories<TModel> Get( params string[]? includes)
     {
-        includes.ForEach(i => _query = _query.Include(i));
+        // includes.ForEach(i => _query = _query.Include(i));
+        if (includes != null)
+        {
+            _query = includes.Aggregate(_query,
+                (current, include) => current.Include(include));
+        }
         return this;
     }
 
-    public DbRepositories<TModel> Get( params Expression<Func<TModel, object>>[] includes)
+    public IDbRepositories<TModel> Get( params Expression<Func<TModel, object>>[] includes)
     {
         foreach (var expression in includes)
         {
@@ -90,13 +99,13 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     //     
     // }
 
-    public DbRepositories<TModel> Where(Expression<Func<TModel,bool>> predicate)
+    public IDbRepositories<TModel> Where(Expression<Func<TModel,bool>> predicate)
     {
        _query = _query.Where(predicate);
        return this;
     }
 
-    public DbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
+    public IDbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
     {
         predicates.ForEach(predicate => _query = _query.Where(predicate));
         return this;
@@ -116,12 +125,17 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     }
     // public DbRepositories<TModel> GetAllThenInclude()
 
-    public async Task Delete(int id)
+    public async Task Delete(int id, int userId)
     {
         try
         {
             var entry = await _context.Set<TModel>().FindAsync(id);
-            if (entry != null) entry.RowStatusId = (int)StatusEnums.Delete;
+
+            if (entry != null)
+            {
+                entry.RowStatusId = (int)StatusEnums.Delete;
+                entry.UpdateUserId = userId;
+            }
             await _context.SaveChangesAsync();
         }
         catch (Exception e)
@@ -133,6 +147,96 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
 
     }
 
+    public IDbRepositories<T> Selector<T>(Expression<Func<TModel, T>> selector) where T:class, IStatus
+    {
+        try
+        {
+            var query = _query.Select(selector);
+            return new DbRepositories<T>(_context, query );
+        }
+        catch (Exception e)
+        {
+            WriteLine(e);
+            throw;
+        }
+    }
+    public IDbRepositories<TModel> GetWithEveryPropertyOnce()
+    { 
+        var properties = typeof(TModel).GetProperties();
+        foreach (var property in properties)
+        {
+            var propertyType = property.PropertyType;
+            if (propertyType is not { IsClass: true, IsAbstract: false } || propertyType == typeof(string)) continue;
+            _query = _query.Include(property.Name);
+        }
+        return this;
+    }
+
+    public IDbRepositories<TModel> GetWithEveryProperty()
+    {
+        var properties = typeof(TModel).GetProperties();
+        foreach (var property in properties)
+        {
+            var propertyType = property.PropertyType;
+            if (propertyType is not { IsClass: true, IsAbstract: false } || propertyType == typeof(string)) continue;
+            _query = _query.Include(property.Name);
+            var nestedProperties = propertyType.GetProperties();
+            foreach (var nestedProperty in nestedProperties)
+            {
+                if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } &&
+                    nestedProperty.PropertyType != typeof(string))
+                {
+                    _query = _query.Include($"{property.Name}.{nestedProperty.Name}");
+                }
+            }
+        }
+        return this;
+    }  
+        // {
+        //         var navigationProperties = typeof(TModel)
+        //             .GetProperties()
+        //             .Where(x => x.PropertyType.IsClass && x.PropertyType != typeof(string)  || x.PropertyType.IsCollection());
+        //         foreach (var navigationProperty in navigationProperties)
+        //         {
+        //             _query = _query.Include(navigationProperty.Name);
+        //             // var includeQuery = _query.Include(navigationProperty.Name) as IIncludableQueryable<TModel, object >;
+        //             var isManyToMany = navigationProperty.PropertyType.GetProperties()
+        //                 ;
+        //             foreach (var nestedProperty in isManyToMany)
+        //             {
+        //                 if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } &&
+        //                     nestedProperty.PropertyType != typeof(string))
+        //                 {
+        //                     _query = _query.Include($"{navigationProperty.Name}.{nestedProperty.Name}");
+        //                 }
+        //             }
+        //             // _query = _query.Include(navigationProperty.Name);
+        //         }
+        //
+        //         return this;
+        // }
+    // {
+    //     var properties = typeof(TModel).GetProperties()
+    //                  .Where(x => x.PropertyType.IsClass && x.PropertyType != typeof(string)  || x.PropertyType.IsCollection());
+    //     
+    //     foreach (var property in properties)
+    //     {
+    //         var propertyType = property.PropertyType;
+    //             _query = _query.Include(property.Name);
+    //             var nestedProperties = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0].GetProperties() : propertyType.GetProperties();
+    //
+    //             foreach (var nestedProperty in nestedProperties)
+    //             {
+    //                 if (nestedProperty.PropertyType is { IsClass: true, IsAbstract: false } && nestedProperty.PropertyType != typeof(string) || propertyType.IsNested)
+    //                 {
+    //                     _query = _query.Include($"{property.Name}.{nestedProperty.Name}");
+    //                 }
+    //             }
+    //         
+    //     }
+    //     return this;
+    // }
+    
     public async Task<TModel> GetOne()
     {
         try
@@ -147,9 +251,9 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         
         throw new NotFoundException();
-        
-            
+
     }
+
     public  async Task<TModel> GetOne(int id, IEnumerable<string>? includes = null)
     {
         try
