@@ -41,4 +41,7 @@ public partial class EventTeam : IStatus
     [Column("EventTeam_twitterPoint")]
     [DefaultValue(false)]
     public bool TeamTwitterPoint { get; set; } 
+    [Column("EventTeam_point")]
+    [DefaultValue(0)]
+    public int EventTeamPoint { get; set; }
 }
