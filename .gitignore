@@ -106,3 +106,7 @@ dist
 /RestApiASPNET/DataAccessLibrary/obj/Debug/net6.0
 /RestApiASPNET/RestApiASPNET/bin/Debug/net6.0
 /RestApiASPNET/RestApiASPNET/obj/Debug/net6.0
+/RestApiASPNET/DataAccessLibrary/bin/Release/net6.0
+/RestApiASPNET/DataAccessLibrary/obj/Release/net6.0
+/RestApiASPNET/RestApiASPNET/bin/Release/net6.0
+/RestApiASPNET/RestApiASPNET/obj/Release/net6.0
