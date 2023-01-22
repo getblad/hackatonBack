@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using DataAccessLibrary;
 using DataAccessLibrary.Enums;
@@ -7,6 +10,7 @@ using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers
