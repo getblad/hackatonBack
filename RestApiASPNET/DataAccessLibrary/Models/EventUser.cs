@@ -1,6 +1,8 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Repositories;
 
-public partial class EventUser
+namespace DataAccessLibrary.Models;
+
+public partial class EventUser : IStatus
 {
     public int EventUserId { get; set; }
 
