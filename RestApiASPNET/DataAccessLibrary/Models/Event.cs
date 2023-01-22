@@ -11,6 +11,8 @@ public partial class Event:IStatus
 
     public string EventDescription { get; set; } = null!;
 
+    public string? EventUrlAvatar { get; set; }
+
     public DateTime EventStartTime { get; set; }
 
     public DateTime EventEndTime { get; set; }
@@ -54,8 +56,10 @@ public class EventDtoAdmin
 
     public string EventDescription { get; set; } = null!;
 
-    public DateTime EventStartTime { get; set; }
+    public string? EventUrlAvatar { get; set; }
 
+    public DateTime EventStartTime { get; set; }
+   
     public DateTime EventEndTime { get; set; }
 
     public  DateTime EventCreatedDate { get; set; } 
@@ -79,4 +83,6 @@ public class EventDtoAdmin
     public DateTime UpdateTime { get; set; }
 
     public  ICollection<MissionDtoAdmin>? Missions { get; set; } = new List<MissionDtoAdmin>();
+
+  
 }

@@ -86,7 +86,10 @@ public partial class HpContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("update_time");
             entity.Property(e => e.UpdateUserId).HasColumnName("update_user_id");
-
+            entity.Property(e => e.EventUrlAvatar)
+               .HasMaxLength(2000)
+               .IsUnicode(false)
+               .HasColumnName("event_url_avatar");
             entity.HasOne(d => d.EventStatus).WithMany(p => p.Events)
                 .HasForeignKey(d => d.EventStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

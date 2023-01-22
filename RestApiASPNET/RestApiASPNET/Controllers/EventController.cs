@@ -2,6 +2,7 @@ using AutoMapper;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -15,13 +16,21 @@ namespace RestApiASPNET.Controllers
         private readonly IMapper _mapper;
         private readonly EventRepositories _eventRepositories;
 
+        private readonly IDbRepositories<Event> _dbRepositories;
+   
+        private readonly UserHelper _userHelper;
 
-        public EventController( ILogger<EventController> logger, IMapper mapper,
+
+
+
+        public EventController(IDbRepositories<Event> dbRepositories, ILogger<EventController> logger, IMapper mapper, UserHelper userHelper,
             EventRepositories eventRepositories)
         {
+            _dbRepositories = dbRepositories;
             _logger = logger;
             _mapper = mapper;
             _eventRepositories = eventRepositories;
+            _userHelper = userHelper;
         }
 
         [HttpGet("Missions/{eventId:int}")]
@@ -30,7 +39,7 @@ namespace RestApiASPNET.Controllers
         {
             var @event = await _eventRepositories.GetEventMissions(eventId);
             var eventDtoAdmin = _mapper.Map<EventDtoAdmin>(@event);
-            return new JsonResult(Ok( eventDtoAdmin));
+            return new JsonResult(Ok( eventDtoAdmin).Value);
         }
 
         [HttpGet]
@@ -41,7 +50,7 @@ namespace RestApiASPNET.Controllers
             {
                 var dbEvents = await _eventRepositories.GetAll();
                 var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
-                return new JsonResult(Ok(eventDtoAdmins));
+                return new JsonResult(Ok(eventDtoAdmins).Value);
             }
             catch (Exception e)
             {
@@ -68,21 +77,22 @@ namespace RestApiASPNET.Controllers
             }
         }
 
-       
-        // [HttpDelete]
-        // public async Task<JsonResult> DeleteMission(int missionId)
-        // {
-        //     try
-        //     { 
-        //          await _dbService.Delete(missionId);
-        //         return new JsonResult(Ok("Team was deleted"));
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return ResponseHelper.HandleException(e);
-        //     }
-        //     
-        // }
+
+        [HttpDelete]
+        public async Task<JsonResult> DeleteEvent(int eventId)
+        {
+            try
+            {
+                await _dbRepositories.Delete(eventId, await _userHelper.GetId());
+
+                return new JsonResult(Ok("Event was deleted"));
+            }
+            catch (Exception e)
+            {
+                return ResponseHelper.HandleException(e);
+            }
+
+        }
         //
         // [HttpPut]
         // public async Task<JsonResult> UpdateTeam(MissionDtoAdmin newMissionDto)
