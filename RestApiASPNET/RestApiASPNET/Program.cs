@@ -100,7 +100,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+app.Logger.LogInformation("App starting");
 
 app.MapControllers();
 

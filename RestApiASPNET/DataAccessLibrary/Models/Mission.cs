@@ -16,7 +16,7 @@ public partial class Mission:IStatus
 
     public string MissionAuthor { get; set; } = null!;
 
-    public string MissionUrlFileDescription { get; set; } = null!;
+    public string? MissionUrlFileDescription { get; set; }
 
     public TimeSpan MissionExecutionTime { get; set; }
 
@@ -63,7 +63,7 @@ public class MissionDtoAdmin
 
     public string MissionAuthor { get; set; } = null!;
 
-    public string MissionUrlFileDescription { get; set; } = null!;
+    public string? MissionUrlFileDescription { get; set; }
 
     public TimeSpan MissionExecutionTime { get; set; }
 
