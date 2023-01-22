@@ -1,5 +1,6 @@
 ﻿using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace DataAccessLibrary.Services;

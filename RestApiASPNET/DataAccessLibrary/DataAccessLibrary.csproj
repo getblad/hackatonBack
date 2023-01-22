@@ -17,8 +17,4 @@
       </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-<!--      <Compile Include="Services\UserHelper.cs" />-->
-    </ItemGroup>
-
 </Project>

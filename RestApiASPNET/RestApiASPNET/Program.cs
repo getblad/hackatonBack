@@ -1,6 +1,7 @@
 using DataAccessLibrary.Configurations;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 builder.Services.AddScoped<EventRepositories, EventRepositories>();
+builder.Services.AddScoped<EventUserRepositories, EventUserRepositories>();
 builder.Services.AddScoped<UserHelper, UserHelper>();
 builder.Services.AddScoped<EventMissionsRepositories, EventMissionsRepositories>();
 builder.Services.AddSignalR();
@@ -89,7 +91,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 // app.UseEndpoints(e =>
 // {
     // e.MapHub<UserHub>("/user");
@@ -98,7 +100,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+app.Logger.LogInformation("App starting");
 
 app.MapControllers();
 

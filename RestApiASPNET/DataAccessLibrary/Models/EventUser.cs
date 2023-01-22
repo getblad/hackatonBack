@@ -1,6 +1,8 @@
-﻿namespace DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Repositories;
 
-public partial class EventUser
+namespace DataAccessLibrary.Models;
+
+public partial class EventUser : IStatus
 {
     public int EventUserId { get; set; }
 
@@ -33,4 +35,14 @@ public partial class EventUser
     public virtual User UpdateUser { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+}
+public class EventUserDto
+{
+    
+    public int EventId { get; set; }
+
+    public int UserId { get; set; }
+
+    public int? EventTeamId { get; set; }
+
 }

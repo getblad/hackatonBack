@@ -2,7 +2,10 @@
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers;
 
@@ -10,23 +13,28 @@ namespace RestApiASPNET.Controllers;
 [Route("api/Twitter/")]
 public class TwitterController : ControllerBase
 {
-    private readonly IDbRepositories<Event> _dbRepositories;
     private readonly IMapper _mapper;
-    private readonly EventRepositories _eventRepositories;
+    private readonly EventUserRepositories _eventUserRepositories;
 
-    public TwitterController(IDbRepositories<Event> dbRepositories, IMapper mapper, EventRepositories eventRepositories)
+    public TwitterController(IMapper mapper, EventUserRepositories eventUserRepositories)
     {
-        _dbRepositories = dbRepositories;
         _mapper = mapper;
-        _eventRepositories = eventRepositories;
+        _eventUserRepositories = eventUserRepositories;
     }
     
     [HttpPost("{eventId:int}/{twitterBonus:int}")]
-    
+    [Authorize] 
     public async Task<JsonResult> AddBonusForRepost(int eventId, int twitterBonus, [FromBody]string[] userNames)
     {
-            var a =  await _eventRepositories.GetTeamsByTwitter(eventId, twitterBonus,userNames
+        try
+        {
+            var eventTeams =  await _eventUserRepositories.GetTeamsByTwitter(eventId, twitterBonus,userNames
             );
-            return new JsonResult(Ok());
+            return new JsonResult(Ok(eventTeams.Select(a => a?.Team.TeamName)));
+        }
+        catch (Exception e)
+        {
+            return ResponseHelper.HandleException(e);
+        }
     }
 }

@@ -2,7 +2,9 @@ using AutoMapper;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -20,9 +22,6 @@ namespace RestApiASPNET.Controllers
    
         private readonly UserHelper _userHelper;
 
-
-
-
         public EventController(IDbRepositories<Event> dbRepositories, ILogger<EventController> logger, IMapper mapper, UserHelper userHelper,
             EventRepositories eventRepositories)
         {
@@ -34,23 +33,16 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet("Missions/{eventId:int}")]
+        [Authorize]
         
-        public async Task<JsonResult> GetEvent(int eventId, int twitterBonus)
-        {
-            var @event = await _eventRepositories.GetEventMissions(eventId);
-            var eventDtoAdmin = _mapper.Map<EventDtoAdmin>(@event);
-            return new JsonResult(Ok( eventDtoAdmin).Value);
-        }
-
-        [HttpGet]
-        // [Authorize("read:users")]
-        public async Task<JsonResult> GetEvents()
+        public async Task<JsonResult> GetEvent(int eventId)
         {
             try
             {
-                var dbEvents = await _eventRepositories.GetAll();
-                var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
-                return new JsonResult(Ok(eventDtoAdmins).Value);
+                var @event = await _eventRepositories.GetEventMissions(eventId);
+                var eventDtoAdmin = _mapper.Map<EventDtoAdmin>(@event);
+                _logger.LogInformation("Event retrieved from database");
+                return new JsonResult(Ok( eventDtoAdmin).Value);
             }
             catch (Exception e)
             {
@@ -58,7 +50,26 @@ namespace RestApiASPNET.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<JsonResult> GetEvents()
+        {
+            try
+            {
+                var dbEvents = await _eventRepositories.GetAll();
+                var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
+                _logger.LogInformation("Events retrieved from database");
+                return new JsonResult(Ok(eventDtoAdmins).Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return ResponseHelper.HandleException(e);
+            }
+        }
+
         [HttpPost("addEvent")]
+        [Authorize]
         public async Task<JsonResult> PostEvent(EventDtoAdmin newEventDtoAdmin)
         {
             try
@@ -69,44 +80,32 @@ namespace RestApiASPNET.Controllers
                 newEvent.EventStatusId = (int)StatusEvent.Created;
                 newEvent.RowStatusId = (int)StatusEnums.Active;
                 await _eventRepositories.Create(newEvent);
+                _logger.LogInformation("Event added");
                 return new JsonResult(Ok("Event is added"));
             }
             catch(Exception e)
             {
+                _logger.LogError(e.Message);
                 return ResponseHelper.HandleException(e);
             }
         }
 
 
         [HttpDelete]
+        [Authorize]
         public async Task<JsonResult> DeleteEvent(int eventId)
         {
             try
             {
                 await _dbRepositories.Delete(eventId, await _userHelper.GetId());
-
+                _logger.LogInformation("Event deleted");
                 return new JsonResult(Ok("Event was deleted"));
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return ResponseHelper.HandleException(e);
             }
-
         }
-        //
-        // [HttpPut]
-        // public async Task<JsonResult> UpdateTeam(MissionDtoAdmin newMissionDto)
-        // {
-        //     try
-        //     {
-        //         var mission = _mapper.Map<Mission>(newMissionDto);
-        //         await _dbService.Update(mission.MissionId,mission);
-        //         return new JsonResult(Ok("Update is complete"));
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return ResponseHelper.HandleException(e);
-        //     }
-        // }
     }
 }
