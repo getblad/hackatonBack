@@ -36,3 +36,13 @@ public partial class EventUser : IStatus
 
     public virtual User User { get; set; } = null!;
 }
+public class EventUserDto
+{
+    
+    public int EventId { get; set; }
+
+    public int UserId { get; set; }
+
+    public int? EventTeamId { get; set; }
+
+}

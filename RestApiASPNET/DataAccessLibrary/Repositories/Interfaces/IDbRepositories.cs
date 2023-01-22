@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
-using DataAccessLibrary.Models;
 
-namespace DataAccessLibrary.Repositories;
+namespace DataAccessLibrary.Repositories.Interfaces;
 
 public interface IDbRepositories<TModel> where TModel:class, IStatus
 {
