@@ -1,11 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Auth0.ManagementApi;
+﻿using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
-using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +22,7 @@ public class ManagementController:ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "SystemAdmin")]
     public async Task<JsonResult> GetUsers()
     {
         try
@@ -100,6 +96,7 @@ public class ManagementController:ControllerBase
     {
         try
         {
+            await DeleteUserRolesByUserId(userId);
             await _managementApiClient.Users.AssignRolesAsync(userId,
                 new AssignRolesRequest() { Roles = new[] { "rol_XrQtDPjo2Qg7Cl7g" } });
         }

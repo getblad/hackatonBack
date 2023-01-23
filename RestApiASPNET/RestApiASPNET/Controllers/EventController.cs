@@ -81,7 +81,7 @@ namespace RestApiASPNET.Controllers
                 newEvent.RowStatusId = (int)StatusEnums.Active;
                 await _eventRepositories.Create(newEvent);
                 _logger.LogInformation("Event added");
-                return new JsonResult(Ok("Event is added"));
+                return new JsonResult(Ok("Event added"));
             }
             catch(Exception e)
             {
