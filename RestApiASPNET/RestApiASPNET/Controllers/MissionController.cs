@@ -3,6 +3,7 @@ using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 using MissionType = DataAccessLibrary.Enums.MissionType;
@@ -28,6 +29,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet("mains")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> GetMainMissions()
         {
             try
@@ -44,7 +46,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet]
-        // [Authorize("read:users")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> GetMissions()
         {
             try
@@ -60,6 +62,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> PostMission(MissionDtoAdmin newMission)
         {
             try
@@ -78,6 +81,7 @@ namespace RestApiASPNET.Controllers
         }
         
         [HttpDelete]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> DeleteMission(int missionId)
         {
             try
@@ -94,6 +98,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> UpdateMission(MissionDtoAdmin newMissionDto)
         {
             try
