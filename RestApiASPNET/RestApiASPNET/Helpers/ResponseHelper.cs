@@ -1,6 +1,4 @@
-﻿using System;
-using DataAccessLibrary.CustomExceptions;
-using Microsoft.AspNetCore.Http;
+﻿using DataAccessLibrary.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RestApiASPNET.Helpers;

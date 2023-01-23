@@ -1,16 +1,9 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using RestApiASPNET.Helpers;
 using MissionType = DataAccessLibrary.Enums.MissionType;
 
