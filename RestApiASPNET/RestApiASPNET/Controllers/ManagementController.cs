@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
+using DataAccessLibrary.Repositories;
+using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
+using User = DataAccessLibrary.Models.User;
 
 namespace RestApiASPNET.Controllers;
 [ApiController]
@@ -15,10 +18,12 @@ namespace RestApiASPNET.Controllers;
 public class ManagementController:ControllerBase
 {
     private readonly IManagementApiClient _managementApiClient;
+    private readonly IDbRepositories<User> _dbRepositories;
 
-    public ManagementController(IManagementApiClient managementApiClient)
+    public ManagementController(IManagementApiClient managementApiClient, IDbRepositories<User> dbRepositories)
     {
         _managementApiClient = managementApiClient;
+        _dbRepositories = dbRepositories;
     }
 
     [HttpGet]
@@ -26,8 +31,25 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            var users = await _managementApiClient.Users.GetAllAsync(new GetUsersRequest(), new PaginationInfo());
+            var users = await _managementApiClient
+                .Users.GetAllAsync(new GetUsersRequest(), new PaginationInfo());
             return new JsonResult(users);
+        }
+        catch (Exception e)
+        {
+            return ResponseHelper.HandleException(e);
+        }
+    }
+    [HttpGet("simple_users")]
+
+    public async Task<JsonResult> GetSimpleUsers()
+    {
+        try
+        {
+            var assignedUsers = await _managementApiClient.Roles.GetUsersAsync("rol_J5HE7jbShSwX1f1p");
+            var listOfIds = assignedUsers.Select(user => user.UserId).ToList();
+            var listOfUsers = await _dbRepositories.Where(a => listOfIds.Contains(a.UserAuth0Id)).GetAll();
+            return new JsonResult(listOfUsers);
         }
         catch (Exception e)
         {
@@ -69,7 +91,7 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
 
-        return null!;
+        return new JsonResult(Ok());
     }
     [HttpPost("assignModerator")]
     [Authorize(Roles = "SystemAdmin")]
