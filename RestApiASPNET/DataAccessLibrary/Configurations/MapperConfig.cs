@@ -7,6 +7,7 @@ public class MapperConfig:Profile
 {
     public MapperConfig()
     {
+        CreateMap<EventUserDto, EventUser>().ReverseMap();
         CreateMap<TeamDtoAdmin, Team>().ReverseMap();
         CreateMap<UserDtoAdmin, User>().ReverseMap();
         CreateMap<UserDtoPublic, User>().ReverseMap();

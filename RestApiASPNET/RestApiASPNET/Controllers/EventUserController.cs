@@ -10,7 +10,7 @@ using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers;
 [ApiController]
-[Route("event/user")]
+[Route("api/event/user")]
 public class EventUserController:ControllerBase
 {
     private readonly EventUserRepositories _eventUserRepositories;
