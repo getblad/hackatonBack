@@ -50,7 +50,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet("{userId:int}")]
-
+        [Authorize]
         // [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> GetUserById(int userId)
         {
@@ -70,6 +70,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<JsonResult> PostUser(UserDtoAdmin newUserDto)
         {
             try
@@ -88,6 +89,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> DeleteUser(int userId)
         {
 
@@ -136,6 +138,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<JsonResult> UpdateUser(UserDtoAdmin userDto)
         {
             try
@@ -151,22 +154,5 @@ namespace RestApiASPNET.Controllers
             }
             
         }
-        // public async Task<JsonResult> UpdateTeamUser(UserDtoAdmin userDto)
-        //  {
-        //         try
-        //         {
-        //             var user = _mapper.Map<User>(userDto);
-        //
-        //
-        //             await _dbRepositories.Update(user.UserId, user);
-        //             return new JsonResult(Ok("Update is complete"));
-        //         }
-        //         catch (Exception e)
-        //         {
-        //             return ResponseHelper.HandleException(e);
-        //         }
-        //             
-        // }
-        
     }
 }

@@ -37,12 +37,13 @@ public class ManagementController:ControllerBase
         }
     }
     [HttpGet("simple_users")]
+    [Authorize(Roles = "SystemAdmin")]
 
-    public async Task<JsonResult> GetSimpleUsers()
+    public async Task<JsonResult> GetSimpleUsers(string? roleId = "rol_J5HE7jbShSwX1f1p")
     {
         try
         {
-            var assignedUsers = await _managementApiClient.Roles.GetUsersAsync("rol_J5HE7jbShSwX1f1p");
+            var assignedUsers = await _managementApiClient.Roles.GetUsersAsync(roleId);
             var listOfIds = assignedUsers.Select(user => user.UserId).ToList();
             var listOfUsers = await _dbRepositories.Where(a => listOfIds.Contains(a.UserAuth0Id)).GetAll();
             return new JsonResult(listOfUsers);
@@ -52,7 +53,22 @@ public class ManagementController:ControllerBase
             return ResponseHelper.HandleException(e);
         }
     }
+
+    [HttpGet("moderators")]
+    [Authorize(Roles = "SystemAdmin")]
+    public async Task<JsonResult> GetModerators()
+    {
+        try
+        {
+            return await GetSimpleUsers("rol_XrQtDPjo2Qg7Cl7g");
+        }
+        catch (Exception e)
+        {
+            return ResponseHelper.HandleException(e);
+        }
+    }
     [HttpDelete("deleteRoles/{userId}")]
+    [Authorize(Roles = "SystemAdmin")]
     public async Task<JsonResult> DeleteUserRolesByUserId(string userId)
     {
         try
