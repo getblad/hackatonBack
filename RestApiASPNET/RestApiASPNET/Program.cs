@@ -1,22 +1,16 @@
-using System;
 using DataAccessLibrary.Configurations;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RestApiASPNET.Authentication;
+using RestApiASPNET.Services.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// builder.Configuration.AddIniFile("");
 // Add services to the container.
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 builder.Services.AddScoped(typeof(IDbRepositories<>), typeof(DbRepositories<>));
@@ -51,6 +45,7 @@ builder.Services.AddSwaggerGen(opt => {
     });
 });
 
+builder.Logging.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logger.txt"));
 builder.Services.AddDbContext<HpContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("HPDatabase")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

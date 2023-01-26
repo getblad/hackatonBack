@@ -50,7 +50,7 @@
     <Content Include="obj\project.assets.json" />
     <Content Include="obj\project.nuget.cache" />
     <Content Include="obj\project.packagespec.json" />
-    <Content Include="obj\RestApiASPNET.csproj.EntityFrameworkCore.targets" />
+<!--    <Content Include="obj\RestApiASPNET.csproj.EntityFrameworkCore.targets" />-->
     <Content Include="obj\RestApiASPNET.csproj.nuget.dgspec.json" />
     <Content Include="obj\RestApiASPNET.csproj.nuget.g.props" />
     <Content Include="obj\RestApiASPNET.csproj.nuget.g.targets" />
