@@ -1,14 +1,17 @@
 ﻿using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary.Repositories;
 
 public class EventMissionsRepositories:DbRepositories<EventMission>
 {
-    public EventMissionsRepositories(HpContext context) : base(context)
+    private readonly ILogger _logger;
+
+    public EventMissionsRepositories(HpContext context, ILogger logger) : base(context, logger)
     {
+        _logger = logger;
     }
 
     public async Task AssignMission(EventMission eventMission)
@@ -23,10 +26,11 @@ public class EventMissionsRepositories:DbRepositories<EventMission>
                 throw new NotFoundException($"Mission {eventMission.MissionId} not found");
             } 
             await Create(eventMission);
+            _logger.LogInformation("Mission is successfully created");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError(e.Message);
             switch (e)
             {
                 case NotFoundException:

@@ -5,6 +5,7 @@ using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static System.Console;
 
 namespace DataAccessLibrary.Repositories;
@@ -12,11 +13,13 @@ namespace DataAccessLibrary.Repositories;
 public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class, IStatus  
 {
     private readonly HpContext _context;
+    private readonly ILogger _logger;
     private  IQueryable<TModel> _query;
 
-    public DbRepositories(HpContext context, IQueryable<TModel>? query = null)
+    public DbRepositories(HpContext context, ILogger logger, IQueryable<TModel>? query = null)
     {
         _context = context;
+        _logger = logger;
         _query = query ?? _context.Set<TModel>();
 
     }
@@ -30,18 +33,18 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
         catch (DbUpdateException exception) when (exception.InnerException is SqlException)
         {
+            _logger.LogError(exception.Message);
             switch (exception.InnerException.HResult)
             {
                 case -2146232060:
                     throw new AlreadyExistingException("");
             }
 
-            WriteLine();
             throw;
         }
         catch (Exception e)
         {
-            WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }
@@ -148,7 +151,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         try
         {
             var query = _query.Select(selector);
-            return new DbRepositories<T>(_context, query );
+            return new DbRepositories<T>(_context, _logger, query );
         }
         catch (Exception e)
         {

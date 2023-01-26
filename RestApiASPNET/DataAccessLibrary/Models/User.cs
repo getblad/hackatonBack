@@ -1,10 +1,7 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataAccessLibrary.Repositories;
 using Microsoft.EntityFrameworkCore;
-using WebSupergoo.ABCpdf10.Objects;
-using WebSupergoo.ABCpdf12.Objects;
 
 namespace DataAccessLibrary.Models;
 

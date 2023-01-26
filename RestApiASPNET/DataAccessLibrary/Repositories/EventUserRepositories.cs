@@ -1,12 +1,13 @@
 ﻿using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary.Repositories;
 
 public class EventUserRepositories:DbRepositories<EventUser>
 {
     private readonly HpContext _context;
-    public EventUserRepositories(HpContext context) : base(context)
+    public EventUserRepositories(HpContext context, ILogger logger) : base(context, logger)
     {
         _context = context;
     }
@@ -14,8 +15,6 @@ public class EventUserRepositories:DbRepositories<EventUser>
     
     public async Task<List<EventTeam?>> GetTeamsByTwitter(int eventId, int twitterBonus, string[] users = null)
     {
-        try
-        {
             var eventTeams1 = await Where(@event =>
                     @event.EventId == eventId && users!.Contains(@event.User.UserTwitter!) &&
                     @event.RowStatusId == (int)StatusEnums.Active).Selector(a => a.EventTeam)
@@ -28,11 +27,6 @@ public class EventUserRepositories:DbRepositories<EventUser>
             }
             await _context.SaveChangesAsync();
             return eventTeams1;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+       
     }
 }
