@@ -17,9 +17,7 @@ namespace RestApiASPNET.Controllers
         private readonly ILogger<EventController> _logger;
         private readonly IMapper _mapper;
         private readonly EventRepositories _eventRepositories;
-
         private readonly IDbRepositories<Event> _dbRepositories;
-   
         private readonly UserHelper _userHelper;
 
         public EventController(IDbRepositories<Event> dbRepositories, ILogger<EventController> logger, IMapper mapper, UserHelper userHelper,
@@ -33,7 +31,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet("Missions/{eventId:int}")]
-        [Authorize]
+        // [Authorize]
         
         public async Task<JsonResult> GetEvent(int eventId)
         {
@@ -46,6 +44,7 @@ namespace RestApiASPNET.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return ResponseHelper.HandleException(e);
             }
         }

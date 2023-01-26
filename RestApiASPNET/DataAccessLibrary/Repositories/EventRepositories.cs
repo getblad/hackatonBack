@@ -1,11 +1,5 @@
-﻿using System.Linq.Expressions;
-using DataAccessLibrary.CustomExceptions;
-using DataAccessLibrary.Enums;
-using DataAccessLibrary.Models;
-using DataAccessLibrary.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using DataAccessLibrary.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary.Repositories;
 
@@ -13,7 +7,7 @@ public class EventRepositories : DbRepositories<Event>
 {
     private readonly HpContext _context;
 
-    public EventRepositories(HpContext context) : base(context)
+    public EventRepositories(HpContext context, ILogger logger) : base(context, logger)
     {
         _context = context;
     }

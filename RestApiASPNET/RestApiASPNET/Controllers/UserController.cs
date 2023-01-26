@@ -40,11 +40,12 @@ namespace RestApiASPNET.Controllers
                     a.TeamName = user.Team?.TeamName;
                     return a;
                 }).ToList();
+                _logger.LogInformation($"Users retrieved by user:{_userHelper.GetId()}");
                 return new JsonResult(Ok(userAdmins).Value);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.Message);
                 return ResponseHelper.HandleException(e);
             }
         }

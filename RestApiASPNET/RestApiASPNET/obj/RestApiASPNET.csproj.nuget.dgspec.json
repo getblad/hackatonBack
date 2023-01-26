@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj": {}
+    "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
+    "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
         "projectName": "DataAccessLibrary",
-        "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
+        "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -83,14 +83,14 @@
         }
       }
     },
-    "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj": {
+    "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
         "projectName": "RestApiASPNET",
-        "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
+        "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\RestApiASPNET.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\RestApiASPNET\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\RestApiASPNET\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -107,8 +107,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
-                "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackathon-platform\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj"
+              "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj": {
+                "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj"
               }
             }
           }
