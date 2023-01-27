@@ -1,16 +1,9 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLibrary;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Repositories.Interfaces;
 using DataAccessLibrary.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using RestApiASPNET.Helpers;
 
 namespace RestApiASPNET.Controllers
@@ -70,8 +63,8 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var newTeam = _mapper.Map<Team>(newTeamDto);
-                newTeam.CreateTime = DateTime.Now;
-                newTeam.UpdateTime = DateTime.Now;
+                newTeam.CreateTime = DateTime.UtcNow;
+                newTeam.UpdateTime = DateTime.UtcNow;
                 newTeam.RowStatusId = (int)StatusEnums.Active;
                 await _dbRepositories.Create(newTeam);
                 return new JsonResult(Ok("Team is added"));

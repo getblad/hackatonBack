@@ -16,10 +16,10 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
     private readonly ILogger _logger;
     private  IQueryable<TModel> _query;
 
-    public DbRepositories(HpContext context, ILogger logger, IQueryable<TModel>? query = null)
+    public DbRepositories(HpContext context,/* ILogger logger,*/ IQueryable<TModel>? query = null)
     {
         _context = context;
-        _logger = logger;
+        // _logger = logger;
         _query = query ?? _context.Set<TModel>();
 
     }
@@ -152,7 +152,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         try
         {
             var query = _query.Select(selector);
-            return new DbRepositories<T>(_context, _logger, query );
+            return new DbRepositories<T>(_context,/* _logger,*/ query );
         }
         catch (Exception e)
         {

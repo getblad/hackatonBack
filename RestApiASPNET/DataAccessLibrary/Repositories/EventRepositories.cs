@@ -1,5 +1,4 @@
 ﻿using DataAccessLibrary.Models;
-using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary.Repositories;
 
@@ -7,7 +6,7 @@ public class EventRepositories : DbRepositories<Event>
 {
     private readonly HpContext _context;
 
-    public EventRepositories(HpContext context, ILogger logger) : base(context, logger)
+    public EventRepositories(HpContext context /*ILogger logger*/) : base(context /*logger*/)
     {
         _context = context;
     }

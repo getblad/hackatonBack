@@ -1,13 +1,12 @@
 ﻿using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
-using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary.Repositories;
 
 public class EventUserRepositories:DbRepositories<EventUser>
 {
     private readonly HpContext _context;
-    public EventUserRepositories(HpContext context, ILogger logger) : base(context, logger)
+    public EventUserRepositories(HpContext context/*, ILogger logger*/) : base(context /*logger*/)
     {
         _context = context;
     }
@@ -21,7 +20,7 @@ public class EventUserRepositories:DbRepositories<EventUser>
                 .Where(team => team!.RowStatusId == (int)StatusEnums.Active && team.TeamTwitterPoint != true).GetAll();
             foreach (var eventTeam in eventTeams1)
             {
-                eventTeam!.UpdateTime = DateTime.Now;
+                eventTeam!.UpdateTime = DateTime.UtcNow;
                 eventTeam!.EventTeamPoint += twitterBonus;
                 eventTeam.TeamTwitterPoint = true;
             }
