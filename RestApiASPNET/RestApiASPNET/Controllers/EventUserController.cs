@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
@@ -30,8 +28,8 @@ public class EventUserController:ControllerBase
         try
         {
             var eventUser = _mapper.Map<EventUser>(eventUserDto);
-            eventUser.CreateTime = DateTime.Now;
-            eventUser.UpdateTime = DateTime.Now;
+            eventUser.CreateTime = DateTime.UtcNow;
+            eventUser.UpdateTime = DateTime.UtcNow;
             var userId = await _userHelper.GetId();
             eventUser.CreateUserId = userId;
             eventUser.UpdateUserId = userId;

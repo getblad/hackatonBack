@@ -68,8 +68,8 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var nemMission = _mapper.Map<Mission>(newMission);
-                nemMission.CreateTime = DateTime.Now;
-                nemMission.UpdateTime = DateTime.Now;
+                nemMission.CreateTime = DateTime.UtcNow;
+                nemMission.UpdateTime = DateTime.UtcNow;
                 nemMission.RowStatusId = (int)StatusEnums.Active;
                 await _dbRepositories.Create(nemMission);
                 return new JsonResult(Ok("Mission is added"));

@@ -9,17 +9,17 @@ public class EventMissionsRepositories:DbRepositories<EventMission>
 {
     private readonly ILogger _logger;
 
-    public EventMissionsRepositories(HpContext context, ILogger logger) : base(context, logger)
+    public EventMissionsRepositories(HpContext context/*, ILogger logger*/) : base(context) /*logger)*/
     {
-        _logger = logger;
+        
     }
 
     public async Task AssignMission(EventMission eventMission)
     {
         try
         {
-            eventMission.CreateTime = DateTime.Now; 
-            eventMission.UpdateTime = DateTime.Now; 
+            eventMission.CreateTime = DateTime.UtcNow; 
+            eventMission.UpdateTime = DateTime.UtcNow; 
             eventMission.RowStatusId = (int)StatusEnums.Active;
             if ((await GetOne(eventMission.MissionId))!.RowStatusId == (int)StatusEnums.Delete)
             {

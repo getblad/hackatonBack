@@ -77,8 +77,8 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var newUser = _mapper.Map<User>(newUserDto);
-                newUser.CreateTime = DateTime.Now;
-                newUser.UpdateTime = DateTime.Now;
+                newUser.CreateTime = DateTime.UtcNow;
+                newUser.UpdateTime = DateTime.UtcNow;
                 newUser.RowStatusId = (int)StatusEnums.Active;
                 var user = await _dbRepositories.Create(newUser);
                 return new JsonResult(Ok(_mapper.Map<UserDtoAdmin>(user)));
@@ -145,7 +145,7 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var user = _mapper.Map<User>(userDto);
-                user.UpdateTime = DateTime.Now;
+                user.UpdateTime = DateTime.UtcNow;
                 await _dbRepositories.Update(user.UserId, user);
                 return new JsonResult(Ok("Update is complete"));
             }
