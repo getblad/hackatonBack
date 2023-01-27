@@ -13,7 +13,7 @@ public class FileLogger:ILogger, IDisposable
     { 
         lock (_lock)
         {
-            File.AppendAllText(_filepath, $"[{logLevel}]" + $" ({DateTime.Now}) "+ formatter( state, exception) + Environment.NewLine);
+            File.AppendAllText(_filepath, $"[{logLevel}]" + $" ({DateTime.UtcNow}) "+ formatter( state, exception) + Environment.NewLine);
         }
     }
 

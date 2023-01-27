@@ -74,8 +74,8 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var newEvent = _mapper.Map<Event>(newEventDtoAdmin);
-                newEvent.CreateTime = DateTime.Now;
-                newEvent.UpdateTime = DateTime.Now;
+                newEvent.CreateTime = DateTime.UtcNow;
+                newEvent.UpdateTime = DateTime.UtcNow;
                 newEvent.EventStatusId = (int)StatusEvent.Created;
                 newEvent.RowStatusId = (int)StatusEnums.Active;
                 await _eventRepositories.Create(newEvent);
