@@ -36,6 +36,7 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
             _logger.LogError(exception.Message);
             switch (exception.InnerException.HResult)
             {
+                //TODO
                 case -2146232060:
                     throw new AlreadyExistingException("");
             }
