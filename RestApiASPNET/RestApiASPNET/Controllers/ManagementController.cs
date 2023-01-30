@@ -5,6 +5,7 @@ using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
+using RestApiASPNET.Services.Management;
 using User = DataAccessLibrary.Models.User;
 
 namespace RestApiASPNET.Controllers;
@@ -14,11 +15,14 @@ public class ManagementController:ControllerBase
 {
     private readonly IManagementApiClient _managementApiClient;
     private readonly IDbRepositories<User> _dbRepositories;
+    private readonly ManagementAuth0 _managementAuth0;
 
-    public ManagementController(IManagementApiClient managementApiClient, IDbRepositories<User> dbRepositories)
+    public ManagementController(IManagementApiClient managementApiClient, IDbRepositories<User> dbRepositories,
+        ManagementAuth0 managementAuth0)
     {
         _managementApiClient = managementApiClient;
         _dbRepositories = dbRepositories;
+        _managementAuth0 = managementAuth0;
     }
 
     [HttpGet]
@@ -43,9 +47,8 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            var assignedUsers = await _managementApiClient.Roles.GetUsersAsync(roleId);
-            var listOfIds = assignedUsers.Select(user => user.UserId).ToList();
-            var listOfUsers = await _dbRepositories.Where(a => listOfIds.Contains(a.UserAuth0Id)).GetAll();
+            
+            var listOfUsers = await _managementAuth0.GetUsersByRole(roleId!);
             return new JsonResult(listOfUsers);
         }
         catch (Exception e)
@@ -60,7 +63,8 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            return await GetSimpleUsers("rol_XrQtDPjo2Qg7Cl7g");
+            var listOfUsers = await _managementAuth0.GetUsersByRole("rol_XrQtDPjo2Qg7Cl7g");
+            return new JsonResult(listOfUsers);
         }
         catch (Exception e)
         {
