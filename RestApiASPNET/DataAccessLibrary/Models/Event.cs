@@ -100,6 +100,7 @@ public class EventDtoAdmin
 
     public DateTime UpdateTime { get; set; }
 
+    public bool IsParticipant { get; set; }
     public  ICollection<MissionDtoAdmin>? Missions { get; set; } = new List<MissionDtoAdmin>();
 
     public ICollection<UserDtoAdmin>? Users { get; set; } = new List<UserDtoAdmin>();
