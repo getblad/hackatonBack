@@ -81,6 +81,8 @@ public class EventDtoAdmin
     public  DateTime EventCreatedDate { get; set; } 
 
     public int EventStatusId { get; set; }
+    
+    public int? NumberOfParticipants { get; set; }
 
     public int? EventMaxCountOfTeamMembers { get; set; }
 

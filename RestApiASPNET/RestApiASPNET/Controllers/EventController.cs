@@ -77,7 +77,7 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var dbEvents = await _eventRepositories.GetAll();
+                var dbEvents = await _eventRepositories.Get("EventUsers").GetAll();
                 var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
                 _logger.LogInformation("Events retrieved from database");
                 return new JsonResult(Ok(eventDtoAdmins).Value);
