@@ -15,7 +15,9 @@ public class MapperConfig:Profile
         CreateMap<Event, EventDtoAdmin>()
             .ForMember(a => a.Missions, opt => opt
             .MapFrom(src => src.EventMissions.Select(Func)
-                .ToList())).ReverseMap();
+                .ToList())).ForMember(a => a.NumberOfParticipants, opt =>
+                opt.MapFrom(src => src.EventUsers.Count))
+            .ReverseMap();
         CreateMap<EventMissionDto, EventMission>().ReverseMap();
         // CreateMap<IGrouping<int, EventMission>, Event>().ForMember(dest => dest,
             // opt => 
