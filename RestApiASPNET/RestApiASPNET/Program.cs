@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RestApiASPNET.Authentication;
 using RestApiASPNET.Services.Logging;
+using RestApiASPNET.Services.Management;
 
 var builder = WebApplication.CreateBuilder(args);
 // builder.Configuration.AddIniFile("");
@@ -72,10 +73,12 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-builder.Services.AddScoped<EventRepositories, EventRepositories>();
-builder.Services.AddScoped<EventUserRepositories, EventUserRepositories>();
-builder.Services.AddScoped<UserHelper, UserHelper>();
-builder.Services.AddScoped<EventMissionsRepositories, EventMissionsRepositories>();
+builder.Services.AddScoped<EventRepositories>();
+builder.Services.AddScoped<EventUserRepositories>();
+builder.Services.AddScoped<UserHelper>();
+builder.Services.AddScoped<ManagementAuth0>();
+builder.Services.AddScoped<EventMissionsRepositories>();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSignalR();
 
 

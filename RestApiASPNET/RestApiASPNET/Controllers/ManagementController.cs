@@ -1,12 +1,11 @@
-﻿using Auth0.ManagementApi;
+﻿using System.Security.Claims;
+using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
-using DataAccessLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 using RestApiASPNET.Services.Management;
-using User = DataAccessLibrary.Models.User;
 
 namespace RestApiASPNET.Controllers;
 [ApiController]
@@ -14,14 +13,14 @@ namespace RestApiASPNET.Controllers;
 public class ManagementController:ControllerBase
 {
     private readonly IManagementApiClient _managementApiClient;
-    private readonly IDbRepositories<User> _dbRepositories;
+    private readonly IConfiguration _configuration;
     private readonly ManagementAuth0 _managementAuth0;
 
-    public ManagementController(IManagementApiClient managementApiClient, IDbRepositories<User> dbRepositories,
+    public ManagementController(IManagementApiClient managementApiClient,IConfiguration configuration,
         ManagementAuth0 managementAuth0)
     {
         _managementApiClient = managementApiClient;
-        _dbRepositories = dbRepositories;
+        _configuration = configuration;
         _managementAuth0 = managementAuth0;
     }
 
@@ -43,11 +42,11 @@ public class ManagementController:ControllerBase
     [HttpGet("simple_users")]
     [Authorize(Roles = "SystemAdmin")]
 
-    public async Task<JsonResult> GetSimpleUsers(string? roleId = "rol_J5HE7jbShSwX1f1p")
+    public async Task<JsonResult> GetSimpleUsers(string? roleId )
     {
         try
         {
-            
+            roleId ??= _configuration["Roles:Simple_User"];
             var listOfUsers = await _managementAuth0.GetUsersByRole(roleId!);
             return new JsonResult(listOfUsers);
         }
@@ -63,7 +62,7 @@ public class ManagementController:ControllerBase
     {
         try
         {
-            var listOfUsers = await _managementAuth0.GetUsersByRole("rol_XrQtDPjo2Qg7Cl7g");
+            var listOfUsers = await _managementAuth0.GetUsersByRole(_configuration["Roles:Moderator"]!);
             return new JsonResult(listOfUsers);
         }
         catch (Exception e)
@@ -99,8 +98,8 @@ public class ManagementController:ControllerBase
         try
         {
             var claim2 = HttpContext.User.Claims;
-            var claim = (claim2?.FirstOrDefault(a => a.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.Value.ToString();
-            await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { "rol_J5HE7jbShSwX1f1p" }});
+            var claim = (claim2?.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier))?.Value.ToString();
+            await _managementApiClient.Users.AssignRolesAsync(claim, new AssignRolesRequest(){Roles = new[] { _configuration["Roles:Simple_User"] }});
         }
         catch (Exception e)
         {
@@ -118,7 +117,7 @@ public class ManagementController:ControllerBase
         {
             await DeleteUserRolesByUserId(userId);
             await _managementApiClient.Users.AssignRolesAsync(userId,
-                new AssignRolesRequest() { Roles = new[] { "rol_XrQtDPjo2Qg7Cl7g" } });
+                new AssignRolesRequest() { Roles = new[] { _configuration["Roles:Moderator"] } });
         }
         catch (Exception e)
         {
