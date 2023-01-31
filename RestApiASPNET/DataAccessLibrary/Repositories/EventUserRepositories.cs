@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary.Enums;
+﻿using DataAccessLibrary.CustomExceptions;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 
 namespace DataAccessLibrary.Repositories;
@@ -27,5 +28,29 @@ public class EventUserRepositories:DbRepositories<EventUser>
             await _context.SaveChangesAsync();
             return eventTeams1;
        
+    }
+
+
+    public async Task Delete(int eventId, int userIdDelete, int userId)
+    {
+     
+             try
+             {
+                 var entry = await Where(a => a.EventId == eventId, b => b.UserId == userIdDelete).GetOne();
+                 if (entry != null)
+                 {
+                     entry.RowStatusId = (int)StatusEnums.Delete;
+                     entry.UpdateUserId = userId;
+                     entry.UpdateTime = DateTime.UtcNow;
+                 }
+                 await _context.SaveChangesAsync();
+             }
+             catch (Exception e)
+             {
+                 throw new NotFoundException();
+             }
+     
+     
+            
     }
 }

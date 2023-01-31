@@ -105,9 +105,9 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
        return this;
     }
 
-    public IDbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicates)
+    public IDbRepositories<TModel> Where(params Expression<Func<TModel, bool>>[] predicates)
     {
-        predicates.ForEach(predicate => _query = _query.Where(predicate));
+        Array.ForEach(predicates , predicate => _query = _query.Where(predicate));
         return this;
     }
     public async Task<List<TModel>> GetAll()
@@ -123,6 +123,21 @@ public class DbRepositories<TModel>:IDbRepositories<TModel> where TModel : class
         }
        
     }
+    public async Task<List<T>> GetAllSelector<T>(Expression<Func<TModel, IEnumerable<T>>> selector) where T: class, IStatus
+         {
+             try
+             {
+                 return await _query.SelectMany(selector)
+                     .Where(e => e.RowStatusId == (int)StatusEnums.Active)
+                         .ToListAsync();
+             }
+             catch (Exception e)
+             {
+                 WriteLine(e);
+                 throw;
+             }
+            
+         }
     // public DbRepositories<TModel> GetAllThenInclude()
 
     public async Task Delete(int id, int userId)

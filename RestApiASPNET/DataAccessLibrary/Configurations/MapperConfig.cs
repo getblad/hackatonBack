@@ -7,6 +7,7 @@ public class MapperConfig:Profile
 {
     public MapperConfig()
     {
+        
         CreateMap<EventUserDto, EventUser>().ReverseMap();
         CreateMap<TeamDtoAdmin, Team>().ReverseMap();
         CreateMap<UserDtoAdmin, User>().ReverseMap();
@@ -19,9 +20,14 @@ public class MapperConfig:Profile
                 opt.MapFrom(src => src.EventUsers.Count))
             .ReverseMap();
         CreateMap<EventMissionDto, EventMission>().ReverseMap();
+        CreateMap<EventTeam, EventTeamDto>()
+            .ForMember(a => a.Users,
+                opt => opt
+                    .MapFrom(src => src.EventUsers
+                        .Select(user => user.User))).ReverseMap();
         // CreateMap<IGrouping<int, EventMission>, Event>().ForMember(dest => dest,
-            // opt => 
-                // opt.MapFrom(sourceMember => sourceMember.Select(a => a.Event).First()));
+        // opt => 
+        // opt.MapFrom(sourceMember => sourceMember.Select(a => a.Event).First()));
         // .ForMember(dest => dest.Missions);
         // CreateMap<List<EventMission>, List<EventDtoAdmin>>().ForMember(a => a.ForEach(a => a.Missions), opt => {})
         // CreateMap<List<UserDtoAdmin>, List<User>>().ReverseMap();

@@ -50,7 +50,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet("Users/{eventId:int}")]
-        // [Authorize]
+        [Authorize]
 
         public async Task<JsonResult> GetEventUsers(int eventId)
         {
@@ -74,6 +74,47 @@ namespace RestApiASPNET.Controllers
         }
 
 
+
+
+        [HttpGet("{eventId:int}/teams&users")]
+        // [Authorize]
+        public async Task<JsonResult> GetEventTeamsUsers(int eventId)
+        {
+            try
+            {
+               var events = await _eventRepositories.Get("EventTeams.EventUsers.User", "EventUsers.User")
+                   .Where(arg => arg.EventId == eventId).GetAll();
+               // var groupedTeams = eventTeams.GroupBy(s => s.EventId).;
+               var usersWoTeams = (events.SelectMany(a => a.EventUsers)
+                   .Where(eventUser => eventUser.EventTeam == null && eventUser.RowStatusId == (int)StatusEnums.Active)
+                   .Select(a => a.User).ToList());
+               var eventTeams = events.SelectMany(a => a.EventTeams);
+               var teamsWithUsers = eventTeams.Where(a => a.RowStatusId == (int)StatusEnums.Active).Select(team =>
+               {
+                  var eventTeam = _mapper.Map<EventTeamDto>(team);
+                  eventTeam.Users = team.EventUsers.Where(a => a.RowStatusId == (int)StatusEnums.Active).Select(a => _mapper.Map<UserDtoAdmin>(a.User)).ToList()! ;
+                  return eventTeam;
+               }).ToList();
+               teamsWithUsers.Add(new EventTeamDto
+               {
+                   EventTeamId = 0,
+                   EventId = 0,
+                   TeamId = null,
+                   EventTeamName = null,
+                   EventTeamAvatar = null,
+                   EventTeamCapitanId = null,
+                   TeamTwitterPoint = false,
+                   EventTeamPoint = 0,
+                   Users = _mapper.Map<List<UserDtoAdmin>>(usersWoTeams)!
+               });
+               return new JsonResult(Ok(teamsWithUsers).Value);
+            }
+            catch (Exception e)
+            {
+                return ResponseHelper.HandleException(e);
+            }
+        } 
+        
 
         [HttpGet]
         [Authorize]
