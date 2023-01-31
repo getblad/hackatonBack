@@ -24,5 +24,12 @@ public class EventRepositories : DbRepositories<Event>
         return dbEvents;
     }
 
-    
+    public async Task<Event> GetEventUsers(int eventId)
+    {
+        var dbEvents = await Get("EventUsers.User")
+            .Where(a => a.EventId == eventId).GetOne();
+        return dbEvents;
+    }
+
+
 }
