@@ -10,7 +10,11 @@ public partial class EventTeam : IStatus
 
     public int EventId { get; set; }
 
-    public int TeamId { get; set; }
+    public int? TeamId { get; set; }
+
+    [Column("eventTeam_name")] public string EventTeamName { get; set; } = null!;
+
+    [Column("eventTeam_avatar")] public string EventTeamAvatar { get; set; } = null!;
 
     public int? EventTeamCapitanId { get; set; }
 
@@ -44,4 +48,16 @@ public partial class EventTeam : IStatus
     [Column("EventTeam_point")]
     [DefaultValue(0)]
     public int EventTeamPoint { get; set; }
+}
+public class EventTeamDto
+{
+    public int EventTeamId { get; set; }
+    public int EventId { get; set; }
+    public int? TeamId { get; set; }
+    public string EventTeamName { get; set; } = null!;
+    public string EventTeamAvatar { get; set; } = null!;
+    public int? EventTeamCapitanId { get; set; }
+    public bool TeamTwitterPoint { get; set; } 
+    public int EventTeamPoint { get; set; }
+    public List<UserDtoAdmin?> Users { get; set; } = null!;
 }

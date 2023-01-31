@@ -3,6 +3,7 @@ using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repositories;
 using DataAccessLibrary.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
 
@@ -44,11 +45,12 @@ public class EventUserController:ControllerBase
     }
 
     [HttpDelete]
-    public async Task<JsonResult> DeleteUserFromEvent(int userId)
+    [Authorize]
+    public async Task<JsonResult> DeleteUserFromEvent(EventUserDto eventUserDto)
     {
         try
         {
-            await _eventUserRepositories.Delete(userId, await _userHelper.GetId());
+            await _eventUserRepositories.Delete(eventUserDto.EventId, eventUserDto.UserId, await _userHelper.GetId());
             return new JsonResult(Ok());
         }
         catch (Exception e)

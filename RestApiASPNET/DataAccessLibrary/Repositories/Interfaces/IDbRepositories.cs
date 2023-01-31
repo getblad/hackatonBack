@@ -15,8 +15,9 @@ public interface IDbRepositories<TModel> where TModel:class, IStatus
 
     public Task<List<TModel>> GetAll();
 
+    public  Task<List<T>> GetAllSelector<T>(Expression<Func<TModel, IEnumerable<T>>> selector) where T : class, IStatus;
     public IDbRepositories<TModel> Where(Expression<Func<TModel, bool>> predicate);
-    public IDbRepositories<TModel> Where(List<Expression<Func<TModel, bool>>> predicate);
+    public IDbRepositories<TModel> Where(params Expression<Func<TModel, bool>>[] predicate);
 
     public Task<TModel> GetOne(int id, IEnumerable<string>? includes = null);
 
