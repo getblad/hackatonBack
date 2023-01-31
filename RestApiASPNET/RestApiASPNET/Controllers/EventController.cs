@@ -57,9 +57,13 @@ namespace RestApiASPNET.Controllers
             try
             {
                 var @event = await _eventRepositories.GetEventUsers(eventId);
-                var users = @event.EventUsers.Select(a => _mapper.Map<UserDtoAdmin>( a.User)).ToList();
+                var users = @event.EventUsers.Select(a =>
+                {
+                    a.User.CreateTime = a.CreateTime;
+                    return _mapper.Map<UserDtoAdmin>(a.User);
+                }).ToList();
                 
-                _logger.LogInformation("Event retrieved from database");
+                _logger.LogInformation($"User  for event:{eventId} retrieved from database");
                 return new JsonResult(Ok(users).Value);
             }
             catch (Exception e)
@@ -77,8 +81,14 @@ namespace RestApiASPNET.Controllers
         {
             try
             {
-                var dbEvents = await _eventRepositories.Get("EventUsers").GetAll();
-                var eventDtoAdmins = dbEvents.Select(@event => _mapper.Map<EventDtoAdmin>(@event)).ToList();
+                var dbEvents = await _eventRepositories.Get("EventUsers.User").GetAll();
+                var userId = _userHelper.GetAuthId()!;
+                var eventDtoAdmins = dbEvents.Select( @event =>
+                {
+                    var eventDto = _mapper.Map<EventDtoAdmin>(@event);
+                    eventDto.IsParticipant = @event.EventUsers.Any(a => a.User.UserAuth0Id == userId);
+                    return eventDto;
+                }).ToList();
                 _logger.LogInformation("Events retrieved from database");
                 return new JsonResult(Ok(eventDtoAdmins).Value);
             }
