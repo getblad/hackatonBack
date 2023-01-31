@@ -25,7 +25,7 @@ public partial class HpContext : DbContext
 
     public virtual DbSet<EventTeamMissionStatus> EventTeamMissionStatuses { get; set; }
 
-    public virtual DbSet<EventUser> EventUsers { get; set; }
+    public virtual DbSet<EventUser> EventUserUsers { get; set; }
 
     public virtual DbSet<EventUserEventTeamMission> EventUserEventTeamMissions { get; set; }
 

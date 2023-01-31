@@ -49,6 +49,28 @@ namespace RestApiASPNET.Controllers
             }
         }
 
+        [HttpGet("Users/{eventId:int}")]
+        // [Authorize]
+
+        public async Task<JsonResult> GetEventUsers(int eventId)
+        {
+            try
+            {
+                var @event = await _eventRepositories.GetEventUsers(eventId);
+                var users = @event.EventUsers.Select(a => _mapper.Map<UserDtoAdmin>( a.User)).ToList();
+                
+                _logger.LogInformation("Event retrieved from database");
+                return new JsonResult(Ok(users).Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return ResponseHelper.HandleException(e);
+            }
+        }
+
+
+
         [HttpGet]
         [Authorize]
         public async Task<JsonResult> GetEvents()

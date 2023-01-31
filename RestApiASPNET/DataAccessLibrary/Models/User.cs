@@ -98,7 +98,6 @@ public partial class User : IStatus
 
     public virtual ICollection<EventUser> EventUserUsers { get; } = new List<EventUser>();
 
-    
 
     public virtual ICollection<Mission> MissionCreateUsers { get; } = new List<Mission>();
 
