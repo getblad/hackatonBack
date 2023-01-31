@@ -3791,19 +3791,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dimaq\\.nuget\\packages\\": {}
+    "C:\\Users\\Admin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
       "projectName": "DataAccessLibrary",
-      "projectPath": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
-      "packagesPath": "C:\\Users\\dimaq\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dimaq\\source\\repos\\hackathon-platform\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\obj\\",
+      "projectPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\DataAccessLibrary.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Admin\\masa-introduction\\hackatonBack\\RestApiASPNET\\DataAccessLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\dimaq\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
