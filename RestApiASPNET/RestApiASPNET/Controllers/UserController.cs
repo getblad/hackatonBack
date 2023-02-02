@@ -11,6 +11,7 @@ namespace RestApiASPNET.Controllers
 {
     [ApiController]
     [Route("api/Users/")]
+    // [Log(typeof(ILogger<UsersController>))]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -28,7 +29,7 @@ namespace RestApiASPNET.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        // [Authorize]
         public async Task<JsonResult> GetUsers()
         {
             try

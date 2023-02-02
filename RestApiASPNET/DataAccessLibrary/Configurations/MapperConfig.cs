@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
 
 namespace DataAccessLibrary.Configurations;
@@ -17,7 +18,7 @@ public class MapperConfig:Profile
             .ForMember(a => a.Missions, opt => opt
             .MapFrom(src => src.EventMissions.Select(Func)
                 .ToList())).ForMember(a => a.NumberOfParticipants, opt =>
-                opt.MapFrom(src => src.EventUsers.Count))
+                opt.MapFrom(src => src.EventUsers.Count(user => user.RowStatusId == (int)StatusEnums.Active )))
             .ReverseMap();
         CreateMap<EventMissionDto, EventMission>().ReverseMap();
         CreateMap<EventTeam, EventTeamDto>()

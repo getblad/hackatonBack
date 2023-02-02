@@ -36,7 +36,7 @@ public class EventUserController:ControllerBase
             eventUser.UpdateUserId = userId;
             eventUser.RowStatusId = (int)StatusEnums.Active;
             var user = await _eventUserRepositories.Create(eventUser);
-            return new JsonResult(Ok(user).Value);
+            return new JsonResult(Ok());
         }
         catch (Exception e)
         {
