@@ -79,6 +79,7 @@ builder.Services.AddScoped<UserHelper>();
 builder.Services.AddScoped<ManagementAuth0>();
 builder.Services.AddScoped<EventMissionsRepositories>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddLogging();
 builder.Services.AddSignalR();
 
 

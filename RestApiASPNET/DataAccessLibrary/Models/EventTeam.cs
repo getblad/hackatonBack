@@ -59,5 +59,5 @@ public class EventTeamDto
     public int? EventTeamCapitanId { get; set; }
     public bool TeamTwitterPoint { get; set; } 
     public int EventTeamPoint { get; set; }
-    public List<UserDtoAdmin?> Users { get; set; } = null!;
+    public List<UserDtoAdmin?>? Users { get; set; } = null!;
 }
