@@ -127,7 +127,7 @@ namespace RestApiASPNET.Controllers
                 var eventDtoAdmins = dbEvents.Select( @event =>
                 {
                     var eventDto = _mapper.Map<EventDtoAdmin>(@event);
-                    eventDto.IsParticipant = @event.EventUsers.Any(a => a.User.UserAuth0Id == userId);
+                    eventDto.IsParticipant = @event.EventUsers.Any(a => a.User.UserAuth0Id == userId && a.RowStatusId == (int)StatusEnums.Active);
                     return eventDto;
                 }).ToList();
                 _logger.LogInformation("Events retrieved from database");

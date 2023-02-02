@@ -1,10 +1,11 @@
 ﻿using DataAccessLibrary.CustomExceptions;
 using DataAccessLibrary.Enums;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Repositories.Interfaces;
 
 namespace DataAccessLibrary.Repositories;
 
-public class EventUserRepositories:DbRepositories<EventUser>
+public class EventUserRepositories:DbRepositories<EventUser>, IDbRepositories<EventUser>
 {
     private readonly HpContext _context;
     public EventUserRepositories(HpContext context/*, ILogger logger*/) : base(context /*logger*/)
@@ -52,5 +53,22 @@ public class EventUserRepositories:DbRepositories<EventUser>
      
      
             
+    }
+
+
+    public async Task<EventUser> Create(EventUser model)
+    {
+
+
+        var existingModel =
+            _context.EventUsers.FirstOrDefault(a => a.EventId == model.EventId && a.UserId == model.UserId);
+        if (existingModel != null)
+        {
+            
+            existingModel.RowStatusId = (int)StatusEnums.Active;
+            await _context.SaveChangesAsync();
+            return existingModel;
+        };
+        return await base.Create(model);
     }
 }
