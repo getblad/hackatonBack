@@ -3,35 +3,47 @@
 namespace RestApiASPNET.Services.Logging;
 
 
-public class LogAttribute : ActionFilterAttribute
+public class LogAttribute : ActionFilterAttribute, IAsyncActionFilter
 {
-    private readonly ILogger _logger;
 
-    public LogAttribute(Type loggerType)
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton(loggerType, typeof(ILogger));
-        var provider = services.BuildServiceProvider();
-        _logger = provider.GetService<ILogger>()!;
-    }
+    // public LogAttribute(IServiceProvider serviceProvider)
+    // {
+    // _logger = serviceProvider.GetRequiredService<ILogger<LogAttribute>>();
+    // }
 
-    public override void OnActionExecuting(ActionExecutingContext filterContext)
-    {
-        // Log information before the action is executed
-        _logger.LogInformation("Action Executing: " + filterContext.ActionDescriptor.DisplayName);
-    }
+    // public override void OnActionExecuting(ActionExecutingContext filterContext)
+    // {
+    //     // Log information before the action is executed
+    //     var logger = filterContext.HttpContext.RequestServices.GetRequiredService<ILogger<LogAttribute>>();
+    // }
 
-    public override void OnActionExecuted(ActionExecutedContext filterContext)
+    public override async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
     {
-        // Log information after the action is executed
-        if (filterContext.Exception == null)
+        var logger = filterContext.HttpContext.RequestServices.GetRequiredService<ILogger<LogAttribute>>();
+        logger.LogInformation("Action Executing: " + filterContext.ActionDescriptor.DisplayName);
+        try
         {
-            _logger.LogInformation("Action Executed: " + filterContext.ActionDescriptor.DisplayName);
+            var result = await next();
+            
+            if (result.Exception == null)
+            {
+                logger.LogInformation("Action Executed: " + result.ActionDescriptor.DisplayName);
+            }
+            else
+            {
+                // Log the error
+                logger.LogError(result.Exception, "Error in action: " + result.ActionDescriptor.DisplayName);
+            }
         }
-        else
+        catch (Exception e)
         {
-            // Log the error
-            _logger.LogError(filterContext.Exception, "Error in action: " + filterContext.ActionDescriptor.DisplayName);
+            logger.LogError(e, "Error in action: " + filterContext.ActionDescriptor.DisplayName);
+            throw;
         }
     }
+    // public override void OnActionExecuted(ActionExecutedContext filterContext)
+    // {
+    //     // Log information after the action is executed
+    //     var logger = filterContext.HttpContext.RequestServices.GetRequiredService<ILogger<LogAttribute>>();
+    // }
 }

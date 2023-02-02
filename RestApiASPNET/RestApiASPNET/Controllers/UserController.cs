@@ -6,18 +6,20 @@ using DataAccessLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApiASPNET.Helpers;
+using RestApiASPNET.Services.Logging;
 
 namespace RestApiASPNET.Controllers
 {
     [ApiController]
     [Route("api/Users/")]
-    // [Log(typeof(ILogger<UsersController>))]
+    [Log]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IMapper _mapper;
         private readonly IDbRepositories<User> _dbRepositories;
         private readonly UserHelper _userHelper;
+        
 
         public UsersController(ILogger<UsersController> logger, IMapper mapper, IDbRepositories<User> dbRepositories,
            UserHelper userHelper )
@@ -41,23 +43,24 @@ namespace RestApiASPNET.Controllers
                     a.TeamName = user.Team?.TeamName;
                     return a;
                 }).ToList();
-                _logger.LogInformation($"Users retrieved by user:{_userHelper.GetId()}");
+                // _logger.LogInformation($"Users retrieved by user:{_userHelper.GetId()}");
                 return new JsonResult(Ok(userAdmins).Value);
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message);
+                // _logger.LogError(e.Message);
                 return ResponseHelper.HandleException(e);
             }
         }
 
         [HttpGet("{userId:int}")]
-        [Authorize]
+        // [Authorize]
         // [Authorize(Roles = "SystemAdmin")]
         public async Task<JsonResult> GetUserById(int userId)
         {
             try
             {
+                
                 var userDb = await _dbRepositories.Get(a => a.Team!).Where(b => b.UserId == userId).GetOne();
                 var user = _mapper.Map<UserDtoAdmin>(userDb);
                 user.TeamName = userDb.Team?.TeamName;
@@ -67,6 +70,7 @@ namespace RestApiASPNET.Controllers
             catch (Exception e)
             {
                 return ResponseHelper.HandleException(e);
+                
             }
 
         }
